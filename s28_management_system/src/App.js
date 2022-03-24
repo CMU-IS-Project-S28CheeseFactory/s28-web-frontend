@@ -1,9 +1,11 @@
+import HeaderBar from "./components/HeaderBar";
+import "./styles/App.css"
+
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <div>hello from yixuan</div>
-      </header>
+      <HeaderBar />
+      <div>hello from yixuan</div>
     </div>
   );
 }
