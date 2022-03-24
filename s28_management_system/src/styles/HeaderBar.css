@@ -1,0 +1,29 @@
+.global-header {
+  @apply bg-gray-700
+  pt-2 md:pt-1 pb-1 px-1 mt-0
+  h-auto
+  w-full z-20 top-0
+  fixed
+  flex
+  items-center;
+}
+
+.logo {
+  @apply w-9 h-9 rounded mx-14 my-1;
+}
+
+.logoName {
+  @apply text-white text-2xl inline-block mx-2 my-2;
+}
+
+.headerbar-dgraph {
+  @apply text-white text-xl inline-block mx-6 my-2;
+}
+
+.btn-green {
+  @apply text-white
+  bg-green-500
+  hover:bg-green-700
+  py-2 px-4
+  rounded;
+}
