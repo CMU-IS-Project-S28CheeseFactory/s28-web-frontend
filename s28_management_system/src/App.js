@@ -1,10 +1,17 @@
+// import React from 'react'
+// import {Button} from 'antd'
+import {useRoutes} from 'react-router-dom'
+import routes from './routes'
+
 function App() {
+
+  const element=useRoutes(routes)
+  console.log(element)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <div>hello from yixuan</div>
-      </header>
-    </div>
+      <div className="app">
+        {element}
+      </div>
   );
 }
 
