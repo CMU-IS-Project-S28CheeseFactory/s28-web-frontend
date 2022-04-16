@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.datacenter.mapper.CheeseinfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.datacenter.model.domain.Cheeseinfo">
+            <id property="cheeseID" column="CheeseID" jdbcType="VARCHAR"/>
+            <result property="cheeseName" column="CheeseName" jdbcType="VARCHAR"/>
+            <result property="cheeseDescription" column="CheeseDescription" jdbcType="VARCHAR"/>
+            <result property="rennetBatchCode" column="RennetBatchCode" jdbcType="CHAR"/>
+            <result property="rennetWeight" column="RennetWeight" jdbcType="FLOAT"/>
+            <result property="caClBatchCode" column="CaClBatchCode" jdbcType="CHAR"/>
+            <result property="caClWeight" column="CaClWeight" jdbcType="FLOAT"/>
+            <result property="cultureInfo" column="CultureInfo" jdbcType="OTHER"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        CheeseID,CheeseName,CheeseDescription,
+        RennetBatchCode,RennetWeight,CaClBatchCode,
+        CaClWeight,CultureInfo,createTime,
+        updateTime,isDelete
+    </sql>
+</mapper>

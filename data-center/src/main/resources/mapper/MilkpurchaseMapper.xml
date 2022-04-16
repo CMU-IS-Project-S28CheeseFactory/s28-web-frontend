@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.datacenter.mapper.MilkpurchaseMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.datacenter.model.domain.Milkpurchase">
+            <id property="milkOrderID" column="MilkOrderID" jdbcType="CHAR"/>
+            <result property="milkOrderDate" column="MilkOrderDate" jdbcType="DATE"/>
+            <result property="supplierName" column="SupplierName" jdbcType="VARCHAR"/>
+            <result property="milkBatchCode" column="MilkBatchCode" jdbcType="CHAR"/>
+            <result property="milkDeliveryVolume" column="MilkDeliveryVolume" jdbcType="FLOAT"/>
+            <result property="milkDelvoTestResult" column="MilkDelvoTestResult" jdbcType="CHAR"/>
+            <result property="milkPH" column="MilkPH" jdbcType="FLOAT"/>
+            <result property="milkTotalAcidity" column="MilkTotalAcidity" jdbcType="INTEGER"/>
+            <result property="milkTempAtCollection" column="MilkTempAtCollection" jdbcType="FLOAT"/>
+            <result property="milkTempAtDelivery" column="MilkTempAtDelivery" jdbcType="FLOAT"/>
+            <result property="milkFat" column="MilkFat" jdbcType="FLOAT"/>
+            <result property="milkSolidNonFat" column="MilkSolidNonFat" jdbcType="FLOAT"/>
+            <result property="milkProtein" column="MilkProtein" jdbcType="FLOAT"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        MilkOrderID,MilkOrderDate,SupplierName,
+        MilkBatchCode,MilkDeliveryVolume,MilkDelvoTestResult,
+        MilkPH,MilkTotalAcidity,MilkTempAtCollection,
+        MilkTempAtDelivery,MilkFat,MilkSolidNonFat,
+        MilkProtein,createTime,updateTime,
+        isDelete
+    </sql>
+</mapper>

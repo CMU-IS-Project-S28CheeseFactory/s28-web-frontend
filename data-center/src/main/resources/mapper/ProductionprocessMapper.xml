@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.datacenter.mapper.ProductionprocessMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.datacenter.model.domain.Productionprocess">
+            <id property="cheeseBatchCode" column="CheeseBatchCode" jdbcType="VARCHAR"/>
+            <result property="cheeseID" column="CheeseID" jdbcType="VARCHAR"/>
+            <result property="step1StartTime" column="Step1StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step1StartTemp" column="Step1StartTemp" jdbcType="FLOAT"/>
+            <result property="step1pH" column="Step1pH" jdbcType="FLOAT"/>
+            <result property="step1TA" column="Step1TA" jdbcType="FLOAT"/>
+            <result property="step2StartTime" column="Step2StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step2StartTemp" column="Step2StartTemp" jdbcType="FLOAT"/>
+            <result property="step2pH" column="Step2pH" jdbcType="FLOAT"/>
+            <result property="step2TA" column="Step2TA" jdbcType="FLOAT"/>
+            <result property="step3StartTime" column="Step3StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step3StartTemp" column="Step3StartTemp" jdbcType="FLOAT"/>
+            <result property="step3pH" column="Step3pH" jdbcType="FLOAT"/>
+            <result property="step3TA" column="Step3TA" jdbcType="FLOAT"/>
+            <result property="step4StartTime" column="Step4StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step4StartTemp" column="Step4StartTemp" jdbcType="FLOAT"/>
+            <result property="step4pH" column="Step4pH" jdbcType="FLOAT"/>
+            <result property="step4TA" column="Step4TA" jdbcType="FLOAT"/>
+            <result property="step5StartTime" column="Step5StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step5StartTemp" column="Step5StartTemp" jdbcType="FLOAT"/>
+            <result property="step5pH" column="Step5pH" jdbcType="FLOAT"/>
+            <result property="step5TA" column="Step5TA" jdbcType="FLOAT"/>
+            <result property="step6StartTime" column="Step6StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step6StartTemp" column="Step6StartTemp" jdbcType="FLOAT"/>
+            <result property="step6pH" column="Step6pH" jdbcType="FLOAT"/>
+            <result property="step6TA" column="Step6TA" jdbcType="FLOAT"/>
+            <result property="step7StartTime" column="Step7StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step7StartTemp" column="Step7StartTemp" jdbcType="FLOAT"/>
+            <result property="step7pH" column="Step7pH" jdbcType="FLOAT"/>
+            <result property="step7TA" column="Step7TA" jdbcType="FLOAT"/>
+            <result property="step8StartTime" column="Step8StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step8StartTemp" column="Step8StartTemp" jdbcType="FLOAT"/>
+            <result property="step8pH" column="Step8pH" jdbcType="FLOAT"/>
+            <result property="step8TA" column="Step8TA" jdbcType="FLOAT"/>
+            <result property="step9StartTime" column="Step9StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step9StartTemp" column="Step9StartTemp" jdbcType="FLOAT"/>
+            <result property="step9pH" column="Step9pH" jdbcType="FLOAT"/>
+            <result property="step9TA" column="Step9TA" jdbcType="FLOAT"/>
+            <result property="step10StartTime" column="Step10StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step10StartTemp" column="Step10StartTemp" jdbcType="FLOAT"/>
+            <result property="step10pH" column="Step10pH" jdbcType="FLOAT"/>
+            <result property="step10TA" column="Step10TA" jdbcType="FLOAT"/>
+            <result property="step11StartTime" column="Step11StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step11StartTemp" column="Step11StartTemp" jdbcType="FLOAT"/>
+            <result property="step11pH" column="Step11pH" jdbcType="FLOAT"/>
+            <result property="step11TA" column="Step11TA" jdbcType="FLOAT"/>
+            <result property="step12StartTime" column="Step12StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step12StartTemp" column="Step12StartTemp" jdbcType="FLOAT"/>
+            <result property="step12pH" column="Step12pH" jdbcType="FLOAT"/>
+            <result property="step12TA" column="Step12TA" jdbcType="FLOAT"/>
+            <result property="step13StartTime" column="Step13StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step13StartTemp" column="Step13StartTemp" jdbcType="FLOAT"/>
+            <result property="step13pH" column="Step13pH" jdbcType="FLOAT"/>
+            <result property="step13TA" column="Step13TA" jdbcType="FLOAT"/>
+            <result property="step14StartTime" column="Step14StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step14StartTemp" column="Step14StartTemp" jdbcType="FLOAT"/>
+            <result property="step14pH" column="Step14pH" jdbcType="FLOAT"/>
+            <result property="step14TA" column="Step14TA" jdbcType="FLOAT"/>
+            <result property="step15StartTime" column="Step15StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step15StartTemp" column="Step15StartTemp" jdbcType="FLOAT"/>
+            <result property="step15pH" column="Step15pH" jdbcType="FLOAT"/>
+            <result property="step15TA" column="Step15TA" jdbcType="FLOAT"/>
+            <result property="step16StartTime" column="Step16StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step16StartTemp" column="Step16StartTemp" jdbcType="FLOAT"/>
+            <result property="step16pH" column="Step16pH" jdbcType="FLOAT"/>
+            <result property="step16TA" column="Step16TA" jdbcType="FLOAT"/>
+            <result property="step17StartTime" column="Step17StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step17StartTemp" column="Step17StartTemp" jdbcType="FLOAT"/>
+            <result property="step17pH" column="Step17pH" jdbcType="FLOAT"/>
+            <result property="step17TA" column="Step17TA" jdbcType="FLOAT"/>
+            <result property="step18StartTime" column="Step18StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step18StartTemp" column="Step18StartTemp" jdbcType="FLOAT"/>
+            <result property="step18pH" column="Step18pH" jdbcType="FLOAT"/>
+            <result property="step18TA" column="Step18TA" jdbcType="FLOAT"/>
+            <result property="step19StartTime" column="Step19StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step19StartTemp" column="Step19StartTemp" jdbcType="FLOAT"/>
+            <result property="step19pH" column="Step19pH" jdbcType="FLOAT"/>
+            <result property="step19TA" column="Step19TA" jdbcType="FLOAT"/>
+            <result property="step20StartTime" column="Step20StartTime" jdbcType="TIMESTAMP"/>
+            <result property="step20StartTemp" column="Step20StartTemp" jdbcType="FLOAT"/>
+            <result property="step20pH" column="Step20pH" jdbcType="FLOAT"/>
+            <result property="step20TA" column="Step20TA" jdbcType="FLOAT"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        CheeseBatchCode,CheeseID,Step1StartTime,
+        Step1StartTemp,Step1pH,Step1TA,
+        Step2StartTime,Step2StartTemp,Step2pH,
+        Step2TA,Step3StartTime,Step3StartTemp,
+        Step3pH,Step3TA,Step4StartTime,
+        Step4StartTemp,Step4pH,Step4TA,
+        Step5StartTime,Step5StartTemp,Step5pH,
+        Step5TA,Step6StartTime,Step6StartTemp,
+        Step6pH,Step6TA,Step7StartTime,
+        Step7StartTemp,Step7pH,Step7TA,
+        Step8StartTime,Step8StartTemp,Step8pH,
+        Step8TA,Step9StartTime,Step9StartTemp,
+        Step9pH,Step9TA,Step10StartTime,
+        Step10StartTemp,Step10pH,Step10TA,
+        Step11StartTime,Step11StartTemp,Step11pH,
+        Step11TA,Step12StartTime,Step12StartTemp,
+        Step12pH,Step12TA,Step13StartTime,
+        Step13StartTemp,Step13pH,Step13TA,
+        Step14StartTime,Step14StartTemp,Step14pH,
+        Step14TA,Step15StartTime,Step15StartTemp,
+        Step15pH,Step15TA,Step16StartTime,
+        Step16StartTemp,Step16pH,Step16TA,
+        Step17StartTime,Step17StartTemp,Step17pH,
+        Step17TA,Step18StartTime,Step18StartTemp,
+        Step18pH,Step18TA,Step19StartTime,
+        Step19StartTemp,Step19pH,Step19TA,
+        Step20StartTime,Step20StartTemp,Step20pH,
+        Step20TA,createTime,updateTime,
+        isDelete
+    </sql>
+</mapper>

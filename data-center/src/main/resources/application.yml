@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: data-center
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cheese
+    username: react
+    password: password
+  jpa:
+    show-sql: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
