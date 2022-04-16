@@ -66,6 +66,11 @@ public class Calciumpurchase implements Serializable {
      */
     private Integer isDelete;
 
+    /**
+     * 
+     */
+    private Integer isUsed;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

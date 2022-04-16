@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
 * @author lhs
 * @description 针对表【MilkPurchase】的数据库操作Service实现
-* @createDate 2022-04-15 22:40:23
+* @createDate 2022-04-16 23:15:52
 */
 @Service
 public class MilkpurchaseServiceImpl extends ServiceImpl<MilkpurchaseMapper, Milkpurchase>
