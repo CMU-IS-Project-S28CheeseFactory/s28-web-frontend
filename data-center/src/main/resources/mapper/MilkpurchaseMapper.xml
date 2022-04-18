@@ -21,6 +21,7 @@
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+            <result property="isUsed" column="isUsed" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -29,6 +30,6 @@
         MilkPH,MilkTotalAcidity,MilkTempAtCollection,
         MilkTempAtDelivery,MilkFat,MilkSolidNonFat,
         MilkProtein,createTime,updateTime,
-        isDelete
+        isDelete,isUsed
     </sql>
 </mapper>
