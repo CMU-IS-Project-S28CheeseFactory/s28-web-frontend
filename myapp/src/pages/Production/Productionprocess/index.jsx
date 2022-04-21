@@ -1,13 +1,14 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer } from 'antd';
-import React, { useState, useRef } from 'react';
-import { useIntl, FormattedMessage } from 'umi';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
+import { searchProduction } from '@/services/ant-design-pro/prodprocess';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
+import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import { Button, Drawer, message } from 'antd';
+import { useRef, useState } from 'react';
+import { FormattedMessage, useIntl } from 'umi';
 import UpdateForm from './components/UpdateForm';
-import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -78,11 +79,83 @@ const handleRemove = async (selectedRows) => {
   }
 };
 
-const TableList = () => {
-  /**
-   * @en-US Pop-up window of new window
-   * @zh-CN 新建窗口的弹窗
-   *  */
+const columns = [
+  {
+    dataIndex: 'id',
+    valueType: 'indexBorder',
+    width: 48,
+  },
+  {
+    title: 'CheeseBatchCode',
+    dataIndex: 'cheeseBatchCode',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
+    title: 'CheeseID',
+    dataIndex: 'cheeseID',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
+    title: 'CreateTime',
+    dataIndex: 'createTime',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
+    title: 'UpdateTime',
+    dataIndex: 'updateTime',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
+    title: 'IsDelete',
+    dataIndex: 'isDelete',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
+    title: 'Step1StartTime',
+    dataIndex: 'step1StartTime',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
+    title: 'Step1StartTemp',
+    dataIndex: 'step1StartTemp',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
+    title: 'Step1pH',
+    dataIndex: 'step1pH',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
+    title: 'Option',
+    valueType: 'option',
+    key: 'option',
+    render: (item) => {
+      return (
+        <div>
+          <Button
+            danger
+            type="primary"
+            shape="circle"
+            icon={<DeleteOutlined />}
+            disabled={item.default}
+            onClick={() => deleteMethod(item)}
+          />
+        </div>
+      );
+    },
+  },
+];
+
+const Productionprocess = () => {
+  // 新建窗口的弹窗
   const [createModalVisible, handleModalVisible] = useState(false);
   /**
    * @en-US The pop-up window of the distribution update window
@@ -100,142 +173,7 @@ const TableList = () => {
    * */
 
   const intl = useIntl();
-  const columns = [
-    {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.updateForm.ruleName.nameLabel"
-          defaultMessage="Rule name"
-        />
-      ),
-      dataIndex: 'name',
-      tip: 'The rule name is the unique key',
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Description" />,
-      dataIndex: 'desc',
-      valueType: 'textarea',
-    },
-    {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.titleCallNo"
-          defaultMessage="Number of service calls"
-        />
-      ),
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
-      dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        0: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.default"
-              defaultMessage="Shut down"
-            />
-          ),
-          status: 'Default',
-        },
-        1: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
-          ),
-          status: 'Processing',
-        },
-        2: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
-          ),
-          status: 'Success',
-        },
-        3: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.abnormal"
-              defaultMessage="Abnormal"
-            />
-          ),
-          status: 'Error',
-        },
-      },
-    },
-    {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.titleUpdatedAt"
-          defaultMessage="Last scheduled time"
-        />
-      ),
-      sorter: true,
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
 
-        if (`${status}` === '0') {
-          return false;
-        }
-
-        if (`${status}` === '3') {
-          return (
-            <Input
-              {...rest}
-              placeholder={intl.formatMessage({
-                id: 'pages.searchTable.exception',
-                defaultMessage: 'Please enter the reason for the exception!',
-              })}
-            />
-          );
-        }
-
-        return defaultRender(item);
-      },
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => [
-        <a
-          key="config"
-          onClick={() => {
-            handleUpdateModalVisible(true);
-            setCurrentRow(record);
-          }}
-        >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
-        </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          <FormattedMessage
-            id="pages.searchTable.subscribeAlert"
-            defaultMessage="Subscribe to alerts"
-          />
-        </a>,
-      ],
-    },
-  ];
   return (
     <PageContainer>
       <ProTable
@@ -259,7 +197,14 @@ const TableList = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
         ]}
-        request={rule}
+        request={async (params = {}, sort, filter) => {
+          console.log('sort filter:', sort, filter);
+          const productionList = await searchProduction();
+          console.log('productionList:', productionList);
+          return {
+            data: productionList,
+          };
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -400,4 +345,4 @@ const TableList = () => {
   );
 };
 
-export default TableList;
+export default Productionprocess;
