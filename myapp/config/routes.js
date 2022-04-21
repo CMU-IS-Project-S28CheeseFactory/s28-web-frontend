@@ -54,7 +54,7 @@ export default [
     component: './TableList',
   },
   {
-    name: 'purchase',
+    name: 'Purchase',
     icon: 'table',
     path: '/purchase',
     component: './Purchase',
@@ -69,10 +69,14 @@ export default [
   {
     name: 'Production',
     icon: 'table',
-    path: '/Production',
+    path: '/production',
     component: './Production',
     routes: [
-
+      {
+        path: '/production/productionprocess',
+        name: 'production process',
+        component: './Production/Productionprocess',
+      }
     ]
   },
   {
