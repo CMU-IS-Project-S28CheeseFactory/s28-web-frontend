@@ -64,6 +64,11 @@ export default [
         name: 'calcium orders',
         component: './Purchase/CalciumOrders',
       },
+      {
+        path: '/purchase/milk_purchase',
+        name: 'milk purchase',
+        component: './Purchase/MilkPurchase'
+      }
     ]
   },
   {
