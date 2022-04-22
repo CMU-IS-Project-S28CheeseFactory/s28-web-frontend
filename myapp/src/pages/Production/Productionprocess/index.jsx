@@ -1,11 +1,11 @@
-import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
-import { searchProduction } from '@/services/ant-design-pro/prodprocess';
+// import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
+import { addProduction, searchProduction, deleteProduction } from '@/services/ant-design-pro/prodprocess';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm } from '@ant-design/pro-form';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer, message } from 'antd';
+import { Button, Drawer, Form, Input, message } from 'antd';
 import { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import UpdateForm from './components/UpdateForm';
@@ -17,9 +17,9 @@ import UpdateForm from './components/UpdateForm';
 
 const handleAdd = async (fields) => {
   const hide = message.loading('正在添加');
-
+  console.log('addProduction:', fields);
   try {
-    await addRule({ ...fields });
+    await addProduction(fields);
     hide();
     message.success('Added successfully');
     return true;
@@ -61,14 +61,12 @@ const handleUpdate = async (fields) => {
  * @param selectedRows
  */
 
-const handleRemove = async (selectedRows) => {
+const handleRemove = async (values) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-
+  if (!values) return true;
+  console.log("deletevalues:", values.props.record);
   try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
+    await deleteProduction(values.props.record);
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
@@ -146,7 +144,7 @@ const columns = [
             shape="circle"
             icon={<DeleteOutlined />}
             disabled={item.default}
-            onClick={() => deleteMethod(item)}
+            onClick={() => handleRemove(item)}
           />
         </div>
       );
@@ -206,68 +204,16 @@ const Productionprocess = () => {
           };
         }}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
-              &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
-                  defaultMessage="Total number of service calls"
-                />{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            <FormattedMessage
-              id="pages.searchTable.batchDeletion"
-              defaultMessage="Batch deletion"
-            />
-          </Button>
-          <Button type="primary">
-            <FormattedMessage
-              id="pages.searchTable.batchApproval"
-              defaultMessage="Batch approval"
-            />
-          </Button>
-        </FooterToolbar>
-      )}
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: 'New rule',
-        })}
+        title="New production batch"
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
+          console.log('value:', value);
           const success = await handleAdd(value);
-
+          console.log('268 success:', success)
           if (success) {
             handleModalVisible(false);
 
@@ -277,22 +223,15 @@ const Productionprocess = () => {
           }
         }}
       >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="Rule name is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc" />
+        <Form.Item name={['cheeseBatchCode']} label="cheeseBatchCode">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['cheeseID']} label="cheeseID">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['step1StartTime']} label="step1StartTime">
+          <Input />
+        </Form.Item>
       </ModalForm>
       <UpdateForm
         onSubmit={async (value) => {
