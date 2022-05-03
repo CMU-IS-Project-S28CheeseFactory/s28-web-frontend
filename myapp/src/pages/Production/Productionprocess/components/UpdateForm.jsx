@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from 'antd';
 import {
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
   StepsForm,
+  Input,
+  Form,
+  ModalForm,
   ProFormRadio,
   ProFormDateTimePicker,
 } from '@ant-design/pro-form';
@@ -12,7 +15,7 @@ import { useIntl, FormattedMessage } from 'umi';
 
 const UpdateForm = (props) => {
   const intl = useIntl();
-  console.log("props 15:", props)
+  console.log('16 props.values:', props.values);
 
   return (
     <StepsForm
@@ -27,10 +30,7 @@ const UpdateForm = (props) => {
               padding: '32px 40px 48px',
             }}
             destroyOnClose
-            title={intl.formatMessage({
-              id: 'pages.searchTable.updateForm.ruleConfig',
-              defaultMessage: '规则配置',
-            })}
+            title={'Edit'}
             visible={props.updateModalVisible}
             footer={submitter}
             onCancel={() => {
@@ -43,119 +43,25 @@ const UpdateForm = (props) => {
       }}
       onFinish={props.onSubmit}
     >
+
       <StepsForm.StepForm
         title={'Update Cheese info'}
         initialValues={{
-          // name: props.values.names,
-          // cheeseBatchCode: props.values.cheeseBatchCode
-          // desc: props.values.desc,
+          cheeseBatchCode: props.values.cheeseBatchCode,
+          cheeseID: props.values.cheeseID,
+          step1StartTime: props.values.step1StartTime,
+          step1StartTemp: props.values.step1StartTemp,
+          step1TA: props.values.step1TA,
+          step1pH: props.values.step1pH,
         }}
       >
-        <ProFormText
-          name="cheeseBatchCode"
-          label={"cheeseBatchCode"}
-          width="md"
-        />
-        <ProFormText
-          name="cheeseID"
-          label={"cheeseID"}
-          width="md"
-        />
+        <ProFormText name="cheeseBatchCode" label={'cheeseBatchCode'} width="md" />
+        <ProFormText name="cheeseID" label={'cheeseID'} width="md" />
+        {/* <ProFormDateTimePicker name="step1StartTime" label={'step1StartTime'} width="md" /> */}
+        <ProFormText name="step1StartTemp" label={'step1StartTemp'} width="md" />
+        <ProFormText name="step1TA" label={'step1TA'} width="md" />
+        <ProFormText name="step1pH" label={'step1PH'} width="md" />
       </StepsForm.StepForm>
-      {/* <StepsForm.StepForm
-        initialValues={{
-          target: '0',
-          template: '0',
-        }}
-        title={intl.formatMessage({
-          id: 'pages.searchTable.updateForm.ruleProps.title',
-          defaultMessage: '配置规则属性',
-        })}
-      >
-        <ProFormSelect
-          name="target"
-          width="md"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.object',
-            defaultMessage: '监控对象',
-          })}
-          valueEnum={{
-            0: '表一',
-            1: '表二',
-          }}
-        />
-        <ProFormSelect
-          name="template"
-          width="md"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleProps.templateLabel',
-            defaultMessage: '规则模板',
-          })}
-          valueEnum={{
-            0: '规则模板一',
-            1: '规则模板二',
-          }}
-        />
-        <ProFormRadio.Group
-          name="type"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleProps.typeLabel',
-            defaultMessage: '规则类型',
-          })}
-          options={[
-            {
-              value: '0',
-              label: '强',
-            },
-            {
-              value: '1',
-              label: '弱',
-            },
-          ]}
-        />
-      </StepsForm.StepForm>
-      <StepsForm.StepForm
-        initialValues={{
-          type: '1',
-          frequency: 'month',
-        }}
-        title={intl.formatMessage({
-          id: 'pages.searchTable.updateForm.schedulingPeriod.title',
-          defaultMessage: '设定调度周期',
-        })}
-      >
-        <ProFormDateTimePicker
-          name="time"
-          width="md"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.schedulingPeriod.timeLabel',
-            defaultMessage: '开始时间',
-          })}
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.updateForm.schedulingPeriod.timeRules"
-                  defaultMessage="请选择开始时间！"
-                />
-              ),
-            },
-          ]}
-        />
-        <ProFormSelect
-          name="frequency"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.object',
-            defaultMessage: '监控对象',
-          })}
-          width="md"
-          valueEnum={{
-            month: '月',
-            week: '周',
-          }}
-        /> */}
-      {/* </StepsForm.StepForm> */}
     </StepsForm>
   );
 };

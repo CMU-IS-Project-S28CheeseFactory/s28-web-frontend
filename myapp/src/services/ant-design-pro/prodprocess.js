@@ -8,6 +8,17 @@ export async function searchProduction(options) {
   });
 }
 
+export async function updateProduction(body, options) {
+  return request('/api/productionprocess/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 export async function addProduction(body, options) {
   return request('/api/productionprocess/add', {
     method: 'POST',
