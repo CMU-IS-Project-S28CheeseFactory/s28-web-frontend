@@ -65,9 +65,14 @@ export default [
         component: './Purchase/CalciumOrders',
       },
       {
-        path: '/purchase/milk_purchase',
-        name: 'milk purchase',
+        path: '/purchase/milkpurchase',
+        name: 'Milk Purchase',
         component: './Purchase/MilkPurchase'
+      },
+      {
+        path: '/purchase/rennet_purchase',
+        name: 'Rennet Purchase',
+        component: './Purchase/RennetPurchase'
       }
     ]
   },
@@ -90,7 +95,11 @@ export default [
     path: '/Sales',
     component: './Sales',
     routes: [
-
+      {
+        path: '/sales/salesorder',
+        name: 'sales order',
+        component: './Sales/SalesOrder',
+      }
     ]
   },
   {
