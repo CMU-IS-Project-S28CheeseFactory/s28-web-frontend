@@ -1,9 +1,14 @@
 // import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
-import { addProduction, searchProduction, deleteProduction } from '@/services/ant-design-pro/prodprocess';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  addProduction,
+  deleteProduction,
+  searchProduction,
+  updateProduction,
+} from '@/services/ant-design-pro/prodprocess';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { ModalForm } from '@ant-design/pro-form';
-import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import { ModalForm, ProFormDateTimePicker } from '@ant-design/pro-form';
+import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { Button, Drawer, Form, Input, message } from 'antd';
 import { useRef, useState } from 'react';
@@ -25,6 +30,7 @@ const handleAdd = async (fields) => {
     return true;
   } catch (error) {
     hide();
+    console.log("add error:", error);
     message.error('Adding failed, please try again!');
     return false;
   }
@@ -37,20 +43,17 @@ const handleAdd = async (fields) => {
  */
 
 const handleUpdate = async (fields) => {
-  const hide = message.loading('Configuring');
-
+  const hide = message.loading('Updating');
+  console.log('fields', fields);
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
+    await updateProduction(fields);
     hide();
-    message.success('Configuration is successful');
+    message.success('Updated successfully');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Updated failed, please try again!');
+    console.log('update error:', error);
     return false;
   }
 };
@@ -64,7 +67,7 @@ const handleUpdate = async (fields) => {
 const handleRemove = async (values) => {
   const hide = message.loading('正在删除');
   if (!values) return true;
-  console.log("deletevalues:", values.props.record);
+  console.log('deletevalues:', values.props.record);
   try {
     await deleteProduction(values.props.record);
     hide();
@@ -76,81 +79,6 @@ const handleRemove = async (values) => {
     return false;
   }
 };
-
-const columns = [
-  {
-    dataIndex: 'id',
-    valueType: 'indexBorder',
-    width: 48,
-  },
-  {
-    title: 'CheeseBatchCode',
-    dataIndex: 'cheeseBatchCode',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'CheeseID',
-    dataIndex: 'cheeseID',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'CreateTime',
-    dataIndex: 'createTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'UpdateTime',
-    dataIndex: 'updateTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'IsDelete',
-    dataIndex: 'isDelete',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Step1StartTime',
-    dataIndex: 'step1StartTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Step1StartTemp',
-    dataIndex: 'step1StartTemp',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Step1pH',
-    dataIndex: 'step1pH',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Option',
-    valueType: 'option',
-    key: 'option',
-    render: (item) => {
-      return (
-        <div>
-          <Button
-            danger
-            type="primary"
-            shape="circle"
-            icon={<DeleteOutlined />}
-            disabled={item.default}
-            onClick={() => handleRemove(item)}
-          />
-        </div>
-      );
-    },
-  },
-];
 
 const Productionprocess = () => {
   // 新建窗口的弹窗
@@ -165,12 +93,105 @@ const Productionprocess = () => {
   const actionRef = useRef();
   const [currentRow, setCurrentRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
+
+  const [currentData, setCurrentData] = useState();
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
 
   const intl = useIntl();
+
+  const columns = [
+    {
+      dataIndex: 'id',
+      valueType: 'indexBorder',
+      width: 48,
+    },
+    {
+      title: 'CheeseBatchCode',
+      dataIndex: 'cheeseBatchCode',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CheeseID',
+      dataIndex: 'cheeseID',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CreateTime',
+      dataIndex: 'createTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'UpdateTime',
+      dataIndex: 'updateTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'IsDelete',
+      dataIndex: 'isDelete',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Step1StartTime',
+      dataIndex: 'step1StartTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Step1StartTemp',
+      dataIndex: 'step1StartTemp',
+      copyable: true,
+      ellipsis: true,
+    },
+
+    {
+      title: 'Step1pH',
+      dataIndex: 'step1pH',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Step1TA',
+      dataIndex: 'step1TA',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Option',
+      valueType: 'option',
+      key: 'option',
+      render: (item) => {
+        return (
+          <div>
+            <Button
+              shape="circle"
+              icon={<EditOutlined />}
+              disabled={item.default}
+              onClick={async () => {
+                await setCurrentData(item.props.record);
+                await handleUpdateModalVisible(true);
+              }}
+            />
+            <Button
+              danger
+              type="primary"
+              shape="circle"
+              icon={<DeleteOutlined />}
+              disabled={item.default}
+              onClick={() => handleRemove(item)}
+            />
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <PageContainer>
@@ -213,7 +234,7 @@ const Productionprocess = () => {
         onFinish={async (value) => {
           console.log('value:', value);
           const success = await handleAdd(value);
-          console.log('268 success:', success)
+          console.log('268 success:', success);
           if (success) {
             handleModalVisible(false);
 
@@ -229,14 +250,23 @@ const Productionprocess = () => {
         <Form.Item name={['cheeseID']} label="cheeseID">
           <Input />
         </Form.Item>
-        <Form.Item name={['step1StartTime']} label="step1StartTime">
+        {/* <Form.Item name={['step1StartTime']} label="step1StartTime">
+          // {/* <Input />
+        </Form.Item> */}
+        <Form.Item name={['step1StartTemp']} label="step1StartTemp">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['step1TA']} label="step1TA">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['step1pH']} label="step1pH">
           <Input />
         </Form.Item>
       </ModalForm>
       <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
-
+          console.log('values at 250:', value);
           if (success) {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
@@ -254,7 +284,8 @@ const Productionprocess = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
+        // values={currentRow || {}}
+        values={currentData || {}}
       />
 
       <Drawer
