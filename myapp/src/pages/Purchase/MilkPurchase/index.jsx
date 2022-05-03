@@ -188,7 +188,6 @@ const columns = [
   {
     title: 'MilkFat',
     dataIndex: 'milkFat',
-    dataIndex: 'MilkFat',
     copyable: true,
     ellipsis: true,
   },
