@@ -9,32 +9,89 @@ const UserForm = forwardRef((props, ref) => {
             ref={ref}
             layout="vertical"
         >
+            <Form.Item 
+                name="MilkOrderDate"
+                label="Milk Order Date"
+                rules={[{ required: true, message: 'Please input the milk order date!' }]}
+            >
+                <DatePicker />
+            </Form.Item>
             <Form.Item
-                name="username"
-                label="username"
-                rules={[{ required: true, message: 'Please input the username!' }]}
+                name="SupplierName"
+                label="Supplier Name"
+                rules={[{ required: true, message: 'Please input the Supplier Name!' }]}
             >
                 <Input />
             </Form.Item>
             <Form.Item
-                name="password"
-                label="password"
-                rules={[{ required: true, message: 'Please input the password!' }]}
+                name="MilkBatchCode"
+                label="Milk Batch Code"
+                rules={[{ required: true, message: 'Please input the Milk Batch Code!' }]}
             >
                 <Input />
             </Form.Item>
             <Form.Item
-                name="roleId"
-                label="role"
-                rules={[{ required: true, message: 'Please select the role!' }]}
+                name="Milk Delivery Volume"
+                label="Milk Delivery Volume"
+                rules={[{ required: true, message: 'Please input the Milk Delivery Volume' }]}
             >
-                <Select>
-                    {
-                        props.roleList.map(item =>
-                            <Option value={item.id} key={item.id}>{item.roleName}</Option>
-                        )
-                    }
-                </Select>
+                <Input />
+            </Form.Item>
+            <Form.Item
+                name="MilkDelvoTestResult"
+                label="Milk Delvo Test Result"
+                rules={[{ required: true, message: 'Please input the Milk Delvo Test Result' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                name="MilkPH"
+                label="Milk PH"
+                rules={[{ required: true, message: 'Please input the Milk PH' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                name="MilkTotalAcidity"
+                label="Milk Total Acidity"
+                rules={[{ required: true, message: 'Please input the Milk Total Acidity' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                name="MilkTempAtCollection"
+                label="Milk Temp At Collection"
+                rules={[{ required: true, message: 'Please input the Milk Temp At Collection' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                name="MilkTempAtDelivery"
+                label="Milk Temp At Delivery"
+                rules={[{ required: true, message: 'Please input the Milk Temp At Delivery' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                name="MilkFat"
+                label="Milk Fat"
+                rules={[{ required: true, message: 'Please input the Milk Fat' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                name="MilkSolidNonFat"
+                label="Milk Solid Non-Fat"
+                rules={[{ required: true, message: 'Please input the Milk Solid Non-Fat' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                name="MilkProtein"
+                label="Milk Protein"
+                rules={[{ required: true, message: 'Please input the Milk Protein' }]}
+            >
+                <Input />
             </Form.Item>
         </Form>
     )
