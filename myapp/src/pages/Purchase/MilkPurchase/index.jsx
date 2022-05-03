@@ -1,13 +1,25 @@
 import React, { useRef, useState } from 'react';
 import {
+<<<<<<< HEAD
   PlusOutlined, EllipsisOutlined, DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+=======
+  PlusOutlined,
+  EllipsisOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons';
+>>>>>>> b7dafa7e314d2c45e79970b13364c255eb82c839
 import { Button, Tag, Space, Menu, Dropdown, message } from 'antd';
 import { ModalForm, ProFormText, ProFormTextArea, ProFormRadio } from '@ant-design/pro-form';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import { useIntl, FormattedMessage } from 'umi';
 // import request from 'umi-request';
 import { searchUsers, register, deleteUsers } from '@/services/ant-design-pro/api';
+<<<<<<< HEAD
 import { addMilk, searchMilk, deleteMilk } from '@/services/ant-design-pro/milkpurchase';
+=======
+>>>>>>> b7dafa7e314d2c45e79970b13364c255eb82c839
 
 // import { UserForm } from './components/UserForm';
 /**
@@ -18,9 +30,15 @@ import { addMilk, searchMilk, deleteMilk } from '@/services/ant-design-pro/milkp
 
 const handleAdd = async (fields) => {
   const hide = message.loading('正在添加');
+<<<<<<< HEAD
   console.log('addMilkPurchase:', fields);
   try {
     await addProduction(fields);
+=======
+  console.log(fields);
+  try {
+    await register({ ...fields });
+>>>>>>> b7dafa7e314d2c45e79970b13364c255eb82c839
     hide();
     message.success('Added successfully');
     return true;
@@ -188,6 +206,7 @@ const columns = [
   {
     title: 'MilkFat',
     dataIndex: 'milkFat',
+    dataIndex: 'MilkFat',
     copyable: true,
     ellipsis: true,
   },
