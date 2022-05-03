@@ -1,17 +1,13 @@
 import React, { useRef, useState } from 'react';
 import {
-  PlusOutlined,
-  EllipsisOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons';
+  PlusOutlined, EllipsisOutlined, DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
 import { Button, Tag, Space, Menu, Dropdown, message } from 'antd';
 import { ModalForm, ProFormText, ProFormTextArea, ProFormRadio } from '@ant-design/pro-form';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import { useIntl, FormattedMessage } from 'umi';
 // import request from 'umi-request';
 import { searchUsers, register, deleteUsers } from '@/services/ant-design-pro/api';
+import { addMilk, searchMilk, deleteMilk } from '@/services/ant-design-pro/milkpurchase';
 
 // import { UserForm } from './components/UserForm';
 /**
@@ -22,9 +18,9 @@ import { searchUsers, register, deleteUsers } from '@/services/ant-design-pro/ap
 
 const handleAdd = async (fields) => {
   const hide = message.loading('正在添加');
-  console.log(fields);
+  console.log('addMilkPurchase:', fields);
   try {
-    await register({ ...fields });
+    await addProduction(fields);
     hide();
     message.success('Added successfully');
     return true;
@@ -124,80 +120,86 @@ const deleteMethod = (item) => {
 
 const columns = [
   {
-    dataIndex: 'MilkOrderID',
+    dataIndex: 'id',
     valueType: 'indexBorder',
     width: 48,
   },
   {
+    title: 'Milk Order ID',
+    dataIndex: 'milkOrderID',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
     title: 'MilkOrderDate',
-    dataIndex: 'MilkOrderDate',
+    dataIndex: 'milkOrderDate',
     valueType: 'dateTime',
     copyable: true,
     ellipsis: true,
   },
   {
     title: 'SupplierName',
-    dataIndex: 'SupplierName',
+    dataIndex: 'supplierName',
     copyable: true,
     ellipsis: true,
   },
   {
     title: 'MilkBatchCode',
-    dataIndex: 'MilkBatchCode',
+    dataIndex: 'milkBatchCode',
     copyable: true,
     ellipsis: true,
   },
   {
     title: 'MilkDeliveryVolume',
-    dataIndex: 'MilkDeliveryVolume',
+    dataIndex: 'milkDeliveryVolume',
     copyable: true,
     ellipsis: true,
   },
   {
     title: 'MilkDelvoTestResult',
-    dataIndex: 'MilkDelvoTestResult',
+    dataIndex: 'milkDelvoTestResult',
     copyable: true,
     ellipsis: true,
   },
   {
     title:'MilkPH',
-    dataIndex: 'MilkPH',
+    dataIndex: 'milkPH',
     copyable: true,
     ellipsis: true,
   },
   {
     title: 'MilkTotalAcidity',
-    dataIndex: 'MilkTotalAcidity',
+    dataIndex: 'milkTotalAcidity',
     copyable: true,
     ellipsis: true,
   },
   {
     title: 'MilkTempAtCollection',
-    dataIndex: 'MilkTempAtCollection',
+    dataIndex: 'milkTempAtCollection',
     copyable: true,
     ellipsis: true,
   },
   {
     title: 'MilkTempAtDelivery',
-    dataIndex: 'MilkTempAtDelivery',
+    dataIndex: 'milkTempAtDelivery',
     copyable: true,
     ellipsis: true,
   },
   {
     title: 'MilkFat',
-    dataIndex: 'MilkFat',
+    dataIndex: 'milkFat',
     copyable: true,
     ellipsis: true,
   },
   {
     title: 'MilkSolidNonFat',
-    dataIndex: 'MilkSolidNonFat',
+    dataIndex: 'milkSolidNonFat',
     copyable: true,
     ellipsis: true,
   },
   {
     title: 'MilkProtein',
-    dataIndex: 'MilkProtein',
+    dataIndex: 'milkProtein',
     copyable: true,
     ellipsis: true,
   },
@@ -260,11 +262,11 @@ export default () => {
         scroll={{ x: "auto" }}
         cardBordered
         request={async (params = {}, sort, filter) => {
-          console.log(sort, filter);
-          const userList = await searchUsers();
-          console.log(userList);
+          console.log('sort filter:', sort, filter);
+          const milkList = await searchMilk();
+          console.log('milkList:', milkList);
           return {
-            data: userList,
+            data: milkList,
           };
         }}
         editable={{
@@ -296,7 +298,7 @@ export default () => {
           pageSize: 5,
         }}
         dateFormatter="string"
-        headerTitle="User Manage"
+        headerTitle="Milk Purchase"
         toolBarRender={() => [
           <Button
             key="button"
@@ -338,13 +340,13 @@ export default () => {
             {
               required: true,
               message: (
-                <FormattedMessage id="pages.user.add.username" defaultMessage="name is required" />
+                <FormattedMessage id="pages.purchase.milkpurchase.add.milkorderid" defaultMessage="Milk order ID is required" />
               ),
             },
           ]}
           width="md"
-          name="username"
-          label="username"
+          name="MilkOrderID"
+          label="MilkOrderID"
         />
         <ProFormText
           rules={[
@@ -352,15 +354,15 @@ export default () => {
               required: true,
               message: (
                 <FormattedMessage
-                  id="pages.user.add.password"
-                  defaultMessage="password is required"
+                  id="pages.purchase.MilkPurchase.add.MilkOrderDate"
+                  defaultMessage="Milk order date is required"
                 />
               ),
             },
           ]}
           width="md"
-          name="password"
-          label="password"
+          name="Milk Order Date"
+          label="MilkOrderDate"
         />
         <ProFormText
           rules={[
@@ -368,15 +370,15 @@ export default () => {
               required: true,
               message: (
                 <FormattedMessage
-                  id="pages.user.add.checkPassword"
+                  id="pages.purchase.MilkPurchase.add.SupplierName"
                   defaultMessage="password is required"
                 />
               ),
             },
           ]}
           width="md"
-          name="checkPassword"
-          label="checkPassword"
+          name="Supplier Name"
+          label="SupplierName"
         />
       </ModalForm>
     </div>
