@@ -38,8 +38,7 @@ const handleAdd = async (fields) => {
 
 const handleUpdate = async (fields) => {
   // const hide = message.loading('Configuring');
-  var values = fields.props.record
-  console.log("updateValues:", values);
+  console.log("fields.props:", fields.props);
   // try {
   //   await updateRule({
   //     name: fields.name,
@@ -92,6 +91,8 @@ const Productionprocess = () => {
   const actionRef = useRef();
   const [currentRow, setCurrentRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
+
+  const [currentData, setCurrentData] = useState();
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -164,9 +165,10 @@ const Productionprocess = () => {
               shape="circle"
               icon={<EditOutlined />}
               disabled={item.default}
-              onClick={() => {
+              onClick={async () => {
                 handleUpdateModalVisible(true);
-                handleUpdate(item);
+                await setCurrentData(item.props.record);
+                // handleUpdate(item);
               }}
             />
             <Button
@@ -247,7 +249,7 @@ const Productionprocess = () => {
       <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
-
+          console.log("values at 250:", value)
           if (success) {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
@@ -265,7 +267,8 @@ const Productionprocess = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
+        // values={currentRow || {}}
+        values={currentData}
       />
 
       <Drawer

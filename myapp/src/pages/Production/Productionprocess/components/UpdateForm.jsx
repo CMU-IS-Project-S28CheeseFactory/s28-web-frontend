@@ -12,6 +12,8 @@ import { useIntl, FormattedMessage } from 'umi';
 
 const UpdateForm = (props) => {
   const intl = useIntl();
+  console.log("props 15:", props)
+
   return (
     <StepsForm
       stepsProps={{
@@ -42,60 +44,25 @@ const UpdateForm = (props) => {
       onFinish={props.onSubmit}
     >
       <StepsForm.StepForm
+        title={'Update Cheese info'}
         initialValues={{
-          name: props.values.name,
-          desc: props.values.desc,
+          // name: props.values.names,
+          // cheeseBatchCode: props.values.cheeseBatchCode
+          // desc: props.values.desc,
         }}
-        title={intl.formatMessage({
-          id: 'pages.searchTable.updateForm.basicConfig',
-          defaultMessage: '基本信息',
-        })}
       >
         <ProFormText
-          name="name"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
-            defaultMessage: '规则名称',
-          })}
+          name="cheeseBatchCode"
+          label={"cheeseBatchCode"}
           width="md"
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.updateForm.ruleName.nameRules"
-                  defaultMessage="请输入规则名称！"
-                />
-              ),
-            },
-          ]}
         />
-        <ProFormTextArea
-          name="desc"
+        <ProFormText
+          name="cheeseID"
+          label={"cheeseID"}
           width="md"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleDesc.descLabel',
-            defaultMessage: '规则描述',
-          })}
-          placeholder={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleDesc.descPlaceholder',
-            defaultMessage: '请输入至少五个字符',
-          })}
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.updateForm.ruleDesc.descRules"
-                  defaultMessage="请输入至少五个字符的规则描述！"
-                />
-              ),
-              min: 5,
-            },
-          ]}
         />
       </StepsForm.StepForm>
-      <StepsForm.StepForm
+      {/* <StepsForm.StepForm
         initialValues={{
           target: '0',
           template: '0',
@@ -187,8 +154,8 @@ const UpdateForm = (props) => {
             month: '月',
             week: '周',
           }}
-        />
-      </StepsForm.StepForm>
+        /> */}
+      {/* </StepsForm.StepForm> */}
     </StepsForm>
   );
 };
