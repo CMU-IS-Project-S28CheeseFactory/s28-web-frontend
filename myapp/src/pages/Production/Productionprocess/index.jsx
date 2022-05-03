@@ -1,6 +1,6 @@
 // import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
 import { addProduction, searchProduction, deleteProduction } from '@/services/ant-design-pro/prodprocess';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { ModalForm } from '@ant-design/pro-form';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
@@ -37,22 +37,23 @@ const handleAdd = async (fields) => {
  */
 
 const handleUpdate = async (fields) => {
-  const hide = message.loading('Configuring');
-
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-    message.success('Configuration is successful');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Configuration failed, please try again!');
-    return false;
-  }
+  // const hide = message.loading('Configuring');
+  var values = fields.props.record
+  console.log("updateValues:", values);
+  // try {
+  //   await updateRule({
+  //     name: fields.name,
+  //     desc: fields.desc,
+  //     key: fields.key,
+  //   });
+  //   hide();
+  //   message.success('Configuration is successful');
+  //   return true;
+  // } catch (error) {
+  //   hide();
+  //   message.error('Configuration failed, please try again!');
+  //   return false;
+  // }
 };
 /**
  *  Delete node
@@ -77,80 +78,6 @@ const handleRemove = async (values) => {
   }
 };
 
-const columns = [
-  {
-    dataIndex: 'id',
-    valueType: 'indexBorder',
-    width: 48,
-  },
-  {
-    title: 'CheeseBatchCode',
-    dataIndex: 'cheeseBatchCode',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'CheeseID',
-    dataIndex: 'cheeseID',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'CreateTime',
-    dataIndex: 'createTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'UpdateTime',
-    dataIndex: 'updateTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'IsDelete',
-    dataIndex: 'isDelete',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Step1StartTime',
-    dataIndex: 'step1StartTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Step1StartTemp',
-    dataIndex: 'step1StartTemp',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Step1pH',
-    dataIndex: 'step1pH',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Option',
-    valueType: 'option',
-    key: 'option',
-    render: (item) => {
-      return (
-        <div>
-          <Button
-            danger
-            type="primary"
-            shape="circle"
-            icon={<DeleteOutlined />}
-            disabled={item.default}
-            onClick={() => handleRemove(item)}
-          />
-        </div>
-      );
-    },
-  },
-];
 
 const Productionprocess = () => {
   // 新建窗口的弹窗
@@ -171,6 +98,90 @@ const Productionprocess = () => {
    * */
 
   const intl = useIntl();
+
+  const columns = [
+    {
+      dataIndex: 'id',
+      valueType: 'indexBorder',
+      width: 48,
+    },
+    {
+      title: 'CheeseBatchCode',
+      dataIndex: 'cheeseBatchCode',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CheeseID',
+      dataIndex: 'cheeseID',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CreateTime',
+      dataIndex: 'createTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'UpdateTime',
+      dataIndex: 'updateTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'IsDelete',
+      dataIndex: 'isDelete',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Step1StartTime',
+      dataIndex: 'step1StartTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Step1StartTemp',
+      dataIndex: 'step1StartTemp',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Step1pH',
+      dataIndex: 'step1pH',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Option',
+      valueType: 'option',
+      key: 'option',
+      render: (item) => {
+        return (
+          <div>
+            <Button
+              shape="circle"
+              icon={<EditOutlined />}
+              disabled={item.default}
+              onClick={() => {
+                handleUpdateModalVisible(true);
+                handleUpdate(item);
+              }}
+            />
+            <Button
+              danger
+              type="primary"
+              shape="circle"
+              icon={<DeleteOutlined />}
+              disabled={item.default}
+              onClick={() => handleRemove(item)}
+            />
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <PageContainer>
