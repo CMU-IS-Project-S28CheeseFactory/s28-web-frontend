@@ -62,7 +62,7 @@ const UpdateForm = (props) => {
           milkProtein: props.values.milkProtein
         }}
       >
-        <ProFormText name="milkOrderID" label={'milkOrderID'} width="md" />
+        <ProFormText name="milkOrderID" label={'milkOrderID'} width="md" extra="ID cannot be changed." disabled />
         <ProFormText name="milkOrderDate" label={'milkOrderDate'} width="md" />
         {/* <ProFormDateTimePicker name="step1StartTime" label={'step1StartTime'} width="md" /> */}
         <ProFormText name="supplierName" label={'supplierName'} width="md" />

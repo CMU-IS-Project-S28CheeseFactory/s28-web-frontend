@@ -56,7 +56,7 @@ const UpdateForm = (props) => {
           quantity: props.values.quantity
         }}
       >
-        <ProFormText name="rennetOrderID" label={'rennetOrderID'} width="md" />
+        <ProFormText name="rennetOrderID" label={'rennetOrderID'} width="md" extra="ID cannot be changed." disabled />
         <ProFormText name="supplierName" label={'supplierName'} width="md" />
         {/* <ProFormDateTimePicker name="step1StartTime" label={'step1StartTime'} width="md" /> */}
         <ProFormText name="rennetName" label={'rennetName'} width="md" />

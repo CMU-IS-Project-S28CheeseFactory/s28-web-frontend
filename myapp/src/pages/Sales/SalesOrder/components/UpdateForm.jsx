@@ -54,7 +54,7 @@ const UpdateForm = (props) => {
           weight: props.values.weight
         }}
       >
-        <ProFormText name="salesOrderID" label={'salesOrderID'} width="md" />
+        <ProFormText name="salesOrderID" label={'salesOrderID'} width="md" extra="ID cannot be changed." disabled/>
         <ProFormText name="cheeseWheelID" label={'cheeseWheelID'} width="md" />
         {/* <ProFormDateTimePicker name="step1StartTime" label={'step1StartTime'} width="md" /> */}
         <ProFormText name="buyerName" label={'buyerName'} width="md" />
