@@ -1,10 +1,10 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer } from 'antd';
+import {Form, Button, message, Input, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea,ProFormDigit,ProFormDatePicker } from '@ant-design/pro-form';
+import {ModalForm, ProFormText, ProFormTextArea,ProFormDigit,ProFormDatePicker } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm from './components/UpdateForm';
 import { addCalciumpurchase,updateCalciumpurchase,searchCalciumpurchase,deleteCalciumpurchase } from '@/services/ant-design-pro/calciumpurchase';
@@ -117,6 +117,16 @@ const TableList = () => {
   const [currentRow, setCurrentRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
   const [currentData, setCurrentData] = useState();
+  const [form]=Form.useForm();
+  form.setFieldsValue({
+    calciumOrderID:currentData?currentData.calciumOrderID:{},
+    supplierName:currentData?currentData.supplierName:{},
+    caClName:currentData?currentData.caClName:{},
+    caClBatchCode:currentData?currentData.caClBatchCode:{},
+    caClBestBefore:currentData?currentData.caClBestBefore:{},
+    caClOpenDate:currentData?currentData.caClOpenDate:{},
+    quantity:currentData?currentData.quantity:{}
+  })
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -485,15 +495,20 @@ const TableList = () => {
             }
           }
         }}
-        initialValues={{
-          'calciumOrderID':currentData?currentData.calciumOrderID:{},
-          'supplierName':currentData?currentData.supplierName:{},
-          'caClName':currentData?currentData.caClName:{},
-          'caClBatchCode':currentData?currentData.caClBatchCode:{},
-          'caClBestBefore':currentData?currentData.caClBestBefore:{},
-          'caClOpenDate':currentData?currentData.caClOpenDate:{},
-          'quantity':currentData?currentData.quantity:{}
-        }}
+        onCancel={() => {
+          console.log("499")
+          form.resetFields()}}
+        form={form}
+        // initialValues={{
+        //   'calciumOrderID':currentData?currentData.calciumOrderID:{},
+        //   'supplierName':currentData?currentData.supplierName:{},
+        //   'caClName':currentData?currentData.caClName:{},
+        //   'caClBatchCode':currentData?currentData.caClBatchCode:{},
+        //   'caClBestBefore':currentData?currentData.caClBestBefore:{},
+        //   'caClOpenDate':currentData?currentData.caClOpenDate:{},
+        //   'quantity':currentData?currentData.quantity:{}
+        // }}
+        initialValues={currentData}
       >
         <ProFormText
           rules={[
