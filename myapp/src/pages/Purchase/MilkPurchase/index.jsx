@@ -60,7 +60,7 @@ const handleUpdate = async (fields) => {
  * @param selectedRows
  */
 
-const handleRemove = async (selectedRows) => {
+const handleRemove = async (values) => {
   const hide = message.loading('Deleting');
   if (!values) return true;
   console.log('deletevalues:', values.props.record);
