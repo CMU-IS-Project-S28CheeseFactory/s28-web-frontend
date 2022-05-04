@@ -185,7 +185,13 @@ const Productionprocess = () => {
               shape="circle"
               icon={<DeleteOutlined />}
               disabled={item.default}
-              onClick={() => handleRemove(item)}
+              onClick={() => {
+                handleRemove(item);
+                // window.location.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }}
             />
           </div>
         );
@@ -272,7 +278,7 @@ const Productionprocess = () => {
           console.log('values at 250:', value);
           if (success) {
             handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
+            setCurrentData(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
