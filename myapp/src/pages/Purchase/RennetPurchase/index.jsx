@@ -1,11 +1,11 @@
 import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
-import { searchRennet, addRennet, deleteRennet } from '@/services/ant-design-pro/rennetpurchase';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { searchRennet, addRennet, deleteRennet, updateRennet } from '@/services/ant-design-pro/rennetpurchase';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer, message } from 'antd';
+import { Button, Drawer, Form, Input, message } from 'antd';
 import { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import UpdateForm from './components/UpdateForm';
@@ -16,15 +16,16 @@ import UpdateForm from './components/UpdateForm';
  */
 
 const handleAdd = async (fields) => {
-  const hide = message.loading('正在添加');
-
+  const hide = message.loading('Updating');
+  console.log('addRennet:', fields);
   try {
-    await addRule({ ...fields });
+    await addRennet(fields);
     hide();
     message.success('Added successfully');
     return true;
   } catch (error) {
     hide();
+    console.log("add error:", error);
     message.error('Adding failed, please try again!');
     return false;
   }
@@ -37,20 +38,17 @@ const handleAdd = async (fields) => {
  */
 
 const handleUpdate = async (fields) => {
-  const hide = message.loading('Configuring');
-
+  const hide = message.loading('Updating');
+  console.log('fields', fields);
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
+    await updateRennet(fields);
     hide();
-    message.success('Configuration is successful');
+    message.success('Updated successfully');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Updated failed, please try again!');
+    console.log('update error:', error);
     return false;
   }
 };
@@ -61,14 +59,12 @@ const handleUpdate = async (fields) => {
  * @param selectedRows
  */
 
-const handleRemove = async (selectedRows) => {
+const handleRemove = async (values) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-
+  if (!values) return true;
+  console.log('deletevalues:', values.props.record);
   try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
+    await deleteRennet(values.props.record);
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
@@ -79,146 +75,9 @@ const handleRemove = async (selectedRows) => {
   }
 };
 
-const columns = [
-  {
-    dataIndex: 'id',
-    valueType: 'indexBorder',
-    width: 48,
-  },
-  {
-    title: 'Order Number',
-    dataIndex: 'OrderNumber',
-  },
-  {
-    title: 'Order Date',
-    dataIndex: 'OrderDate',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Supplier Reference',
-    dataIndex: 'SupplierRef',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Supplier Code',
-    dataIndex: 'SupplierCode',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Supplier Name',
-    dataIndex: 'SupplierName',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Product Code',
-    dataIndex: 'ProductCode',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Product Description',
-    dataIndex: 'ProductDescription',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Product Units',
-    dataIndex: 'ProductUnits',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Order Quantity',
-    dataIndex: 'OrderQuantity',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Line Delivery Date',
-    dataIndex: 'LineDeliveryDate',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Line Comments',
-    dataIndex: 'LineComments',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Receipt Quantity',
-    dataIndex: 'ReceiptQuantity',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Accepted Quantity',
-    dataIndex: 'AcceptedQuantity',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Rejected Quantity',
-    dataIndex: 'RejectedQuantity',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Reject Reason',
-    dataIndex: 'RejectReason',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Receipt Comments',
-    dataIndex: 'ReceiptComments',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Rennet Batch Code',
-    dataIndex: 'RennetBatchCode',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'create Time',
-    dataIndex: 'createTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'update Time',
-    dataIndex: 'updateTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Option',
-    valueType: 'option',
-    key: 'option',
-    render: (item) => {
-      return (
-        <div>
-          <Button
-            danger
-            type="primary"
-            shape="circle"
-            icon={<DeleteOutlined />}
-            disabled={item.default}
-            onClick={() => deleteMethod(item)}
-          />
-        </div>
-      );
-    },
-  },
-];
 
-const Productionprocess = () => {
+
+const Rennetpurchase = () => {
   // 新建窗口的弹窗
   const [createModalVisible, handleModalVisible] = useState(false);
   /**
@@ -231,12 +90,101 @@ const Productionprocess = () => {
   const actionRef = useRef();
   const [currentRow, setCurrentRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
+  const [currentData, setCurrentData] = useState();
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
 
   const intl = useIntl();
+
+  const columns = [
+    {
+      dataIndex: 'id',
+      valueType: 'indexBorder',
+      width: 48,
+    },
+    {
+      title: 'Rennet Order ID',
+      dataIndex: 'rennetOrderID',
+    },
+    {
+      title: 'Supplier Name',
+      dataIndex: 'supplierName',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Rennet Name',
+      dataIndex: 'rennetName',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Rennet Batch Code',
+      dataIndex: 'rennetBatchCode',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Rennet Best Before',
+      dataIndex: 'rennet_Best_Before',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Rennet Open Date',
+      dataIndex: 'rennet_Open_Date',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'create Time',
+      dataIndex: 'createTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'update Time',
+      dataIndex: 'updateTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Option',
+      valueType: 'option',
+      key: 'option',
+      render: (item) => {
+        return (
+          <div>
+              <Button
+                shape="circle"
+                icon={<EditOutlined />}
+                disabled={item.default}
+                onClick={async () => {
+                  await setCurrentData(item.props.record);
+                  await handleUpdateModalVisible(true);
+                }}
+              />
+            <Button
+              danger
+              type="primary"
+              shape="circle"
+              icon={<DeleteOutlined />}
+              disabled={item.default}
+              onClick={() => handleRemove(item)}
+            />
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <PageContainer>
@@ -323,10 +271,7 @@ const Productionprocess = () => {
         </FooterToolbar>
       )}
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: 'New rule',
-        })}
+        title="Add new rennet purchase"
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
@@ -342,22 +287,31 @@ const Productionprocess = () => {
           }
         }}
       >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="Rule name is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc" />
+        <Form.Item name={['rennetOrderID']} label="rennetOrderID">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['supplierName']} label="supplierName">
+          <Input />
+        </Form.Item>
+        {/* <Form.Item name={['step1StartTime']} label="step1StartTime">
+          // {/* <Input />
+        </Form.Item> */}
+        <Form.Item name={['rennetName']} label="rennetName">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['rennetBatchCode']} label="rennetBatchCode">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['rennet_Best_Before']} label="rennet_Best_Before">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['rennet_Open_Date']} label="rennet_Open_Date">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['quantity']} label="quantity">
+          <Input />
+        </Form.Item>
+
       </ModalForm>
       <UpdateForm
         onSubmit={async (value) => {
@@ -380,7 +334,7 @@ const Productionprocess = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
+        values={currentData || {}}
       />
 
       <Drawer
@@ -410,4 +364,4 @@ const Productionprocess = () => {
   );
 };
 
-export default Productionprocess;
+export default Rennetpurchase;

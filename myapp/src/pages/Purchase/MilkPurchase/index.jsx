@@ -1,13 +1,14 @@
 import React, { useRef, useState } from 'react';
 import {
   PlusOutlined, EllipsisOutlined, DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import { Button, Tag, Space, Menu, Dropdown, message } from 'antd';
+import { Button, Drawer, Space, Menu, Dropdown, Form, Input,message } from 'antd';
 import { ModalForm, ProFormText, ProFormTextArea, ProFormRadio } from '@ant-design/pro-form';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import { useIntl, FormattedMessage } from 'umi';
 // import request from 'umi-request';
 import { searchUsers, register, deleteUsers } from '@/services/ant-design-pro/api';
-import { addMilk, searchMilk, deleteMilk } from '@/services/ant-design-pro/milkpurchase';
+import { addMilk, searchMilk, deleteMilk, updateMilk } from '@/services/ant-design-pro/milkpurchase';
+import UpdateForm from './components/UpdateForm';
 
 // import { UserForm } from './components/UserForm';
 /**
@@ -20,7 +21,7 @@ const handleAdd = async (fields) => {
   const hide = message.loading('正在添加');
   console.log('addMilkPurchase:', fields);
   try {
-    await addProduction(fields);
+    await addMilk(fields);
     hide();
     message.success('Added successfully');
     return true;
@@ -38,20 +39,17 @@ const handleAdd = async (fields) => {
  */
 
 const handleUpdate = async (fields) => {
-  const hide = message.loading('Configuring');
-
+  const hide = message.loading('Updating');
+  console.log('fields', fields);
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
+    await updateMilk(fields);
     hide();
-    message.success('Configuration is successful');
+    message.success('Updated successfully');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Updated failed, please try again!');
+    console.log('update error:', error);
     return false;
   }
 };
@@ -62,23 +60,21 @@ const handleUpdate = async (fields) => {
  * @param selectedRows
  */
 
-// const handleRemove = async (selectedRows) => {
-//   // const hide = message.loading('正在删除');
-//   if (!selectedRows) return true;
-
-//   try {
-//     await removeRule({
-//       key: selectedRows.map((row) => row.key),
-//     });
-//     hide();
-//     message.success('Deleted successfully and will refresh soon');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Delete failed, please try again');
-//     return false;
-//   }
-// };
+const handleRemove = async (selectedRows) => {
+  const hide = message.loading('Deleting');
+  if (!values) return true;
+  console.log('deletevalues:', values.props.record);
+  try {
+    await deleteMilk(values.props.record);
+    hide();
+    message.success('Deleted successfully and will refresh soon');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('Delete failed, please try again');
+    return false;
+  }
+};
 
 // 展示列
 // columns
@@ -210,22 +206,22 @@ const columns = [
     render: (item) => {
       return (
         <div>
-          {/* <Button
-            type="primary"
-            shape="circle"
-            icon={<EditOutlined />}
-            disabled={item.default}
-            onClick={() => {
-              handleUpdate(item);
-            }}
-          /> */}
+        <Button
+                shape="circle"
+                icon={<EditOutlined />}
+                disabled={item.default}
+                onClick={async () => {
+                  await setCurrentData(item.props.record);
+                  await handleUpdateModalVisible(true);
+                }}
+              />
           <Button
             danger
             type="primary"
             shape="circle"
             icon={<DeleteOutlined />}
             disabled={item.default}
-            onClick={() => deleteMethod(item)}
+            onClick={() => handleRemove(item)}
           />
         </div>
       );
@@ -233,7 +229,7 @@ const columns = [
   },
 ];
 
-export default () => {
+const Milkpurchase = () => {
   const updateForm = useRef(null);
   /**
    * @en-US Pop-up window of new window
@@ -244,9 +240,10 @@ export default () => {
    * @en-US The pop-up window of the distribution update window
    * @zh-CN 分布更新窗口的弹窗
    * */
-
+  const [currentRow, setCurrentRow] = useState();
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
+  const [currentData, setCurrentData] = useState();
   const actionRef = useRef();
   /**
    * @en-US International configuration
@@ -254,6 +251,122 @@ export default () => {
    * */
 
   const intl = useIntl();
+
+  const columns = [
+    {
+      dataIndex: 'id',
+      valueType: 'indexBorder',
+      width: 48,
+    },
+    {
+      title: 'Milk Order ID',
+      dataIndex: 'milkOrderID',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'MilkOrderDate',
+      dataIndex: 'milkOrderDate',
+      valueType: 'dateTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'SupplierName',
+      dataIndex: 'supplierName',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'MilkBatchCode',
+      dataIndex: 'milkBatchCode',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'MilkDeliveryVolume',
+      dataIndex: 'milkDeliveryVolume',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'MilkDelvoTestResult',
+      dataIndex: 'milkDelvoTestResult',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title:'MilkPH',
+      dataIndex: 'milkPH',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'MilkTotalAcidity',
+      dataIndex: 'milkTotalAcidity',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'MilkTempAtCollection',
+      dataIndex: 'milkTempAtCollection',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'MilkTempAtDelivery',
+      dataIndex: 'milkTempAtDelivery',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'MilkFat',
+      dataIndex: 'milkFat',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'MilkSolidNonFat',
+      dataIndex: 'milkSolidNonFat',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'MilkProtein',
+      dataIndex: 'milkProtein',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Option',
+      valueType: 'option',
+      key: 'option',
+      render: (item) => {
+        return (
+          <div>
+          <Button
+                  shape="circle"
+                  icon={<EditOutlined />}
+                  disabled={item.default}
+                  onClick={async () => {
+                    await setCurrentData(item.props.record);
+                    await handleUpdateModalVisible(true);
+                  }}
+                />
+            <Button
+              danger
+              type="primary"
+              shape="circle"
+              icon={<DeleteOutlined />}
+              disabled={item.default}
+              onClick={() => handleRemove(item)}
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <div>
       <ProTable
@@ -314,10 +427,7 @@ export default () => {
       />
       {/* <UserForm roleList={roleList} ref={updateForm}></UserForm> */}
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: 'New rule',
-        })}
+        title="Add new milk purchase"
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
@@ -335,52 +445,98 @@ export default () => {
       >
         {/* add new user */}
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage id="pages.purchase.milkpurchase.add.milkorderid" defaultMessage="Milk order ID is required" />
-              ),
-            },
-          ]}
-          width="md"
-          name="MilkOrderID"
-          label="MilkOrderID"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.purchase.MilkPurchase.add.MilkOrderDate"
-                  defaultMessage="Milk order date is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="Milk Order Date"
-          label="MilkOrderDate"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.purchase.MilkPurchase.add.SupplierName"
-                  defaultMessage="password is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="Supplier Name"
-          label="SupplierName"
-        />
+        <Form.Item name={['milkOrderID']} label="milkOrderID">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkOrderDate']} label="milkOrderDate">
+          <Input />
+        </Form.Item>
+        {/* <Form.Item name={['step1StartTime']} label="step1StartTime">
+          // {/* <Input />
+        </Form.Item> */}
+        <Form.Item name={['supplierName']} label="supplierName">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkBatchCode']} label="milkBatchCode">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkDeliveryVolume']} label="milkDeliveryVolume">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkDelvoTestResult']} label="milkDelvoTestResult">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkPH']} label="milkPH">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkTotalAcidity']} label="milkTotalAcidity">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkTempAtCollection']} label="milkTempAtCollection">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkTempAtDelivery']} label="milkTempAtDelivery">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkFat']} label="milkFat">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkSolidNonFat']} label="milkSolidNonFat">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['milkProtein']} label="milkProtein">
+          <Input />
+        </Form.Item>
       </ModalForm>
+
+      <UpdateForm
+        onSubmit={async (value) => {
+          const success = await handleUpdate(value);
+
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        updateModalVisible={updateModalVisible}
+        values={currentData || {}}
+      />
+      <Drawer
+        width={600}
+        visible={showDetail}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
+        }}
+        closable={false}
+      >
+        {currentRow?.name && (
+          <ProDescriptions
+            column={2}
+            title={currentRow?.name}
+            request={async () => ({
+              data: currentRow || {},
+            })}
+            params={{
+              id: currentRow?.name,
+            }}
+            columns={columns}
+          />
+        )}
+      </Drawer>
     </div>
   );
 };
+
+export default Milkpurchase;
