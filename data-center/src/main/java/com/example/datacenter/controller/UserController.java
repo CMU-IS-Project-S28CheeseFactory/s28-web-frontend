@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.datacenter.model.domain.Users;
 import com.example.datacenter.model.domain.request.UserLoginRequest;
 import com.example.datacenter.model.domain.request.UserRegisterRequest;
+import com.example.datacenter.model.domain.request.UserUpdateRequest;
 import com.example.datacenter.service.UsersService;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,23 @@ public class UserController {
             return -1;
         }
         return usersService.uerRegister(username, password, checkPassword);
+    }
+
+    @PostMapping("/update")
+    public long userUpdate(@RequestBody UserUpdateRequest request) {
+        long id = request.getId();
+        Users user = usersService.getById(id);
+
+        String username = request.getUsername();
+        String password = request.getPassword();
+        String checkPassword = request.getCheckPassword();
+        if (username == null || password == null || checkPassword == null) {
+            return -1;
+        }
+        user.setUsername(username);
+        user.setPassword(password);
+        usersService.saveOrUpdate(user);
+        return user.getId();
     }
 
     @PostMapping("/login")

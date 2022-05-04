@@ -43,6 +43,18 @@ export async function register(body, options) {
   });
 }
 
+/** 更新用户 POST /api/user/update */
+export async function updateUser(body, options) {
+  return request('/api/user/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 删除用户 POST /api/user/delete */
 export async function deleteUsers(body, options) {
   return request('/api/user/delete', {
