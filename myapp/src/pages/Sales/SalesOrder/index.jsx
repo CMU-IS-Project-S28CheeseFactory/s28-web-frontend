@@ -63,7 +63,7 @@ const handleRemove = async (values) => {
   if (!values) return true;
   console.log("deletevalues:", values.props.record);
   try {
-    await deleteProduction(values.props.record);
+    await deleteSalesOrder(values.props.record);
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
