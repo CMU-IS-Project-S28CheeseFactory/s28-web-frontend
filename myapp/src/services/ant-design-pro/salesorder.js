@@ -1,5 +1,15 @@
 import { request } from 'umi';
 
+export async function updateSalesOrder(body, options) {
+  return request('/api/salesorder/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
 
 export async function searchSalesOrder(options) {
   return request('/api/salesorder/search', {

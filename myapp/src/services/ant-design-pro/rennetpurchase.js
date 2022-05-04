@@ -1,5 +1,15 @@
 import { request } from 'umi';
 
+export async function updateRennet(body, options) {
+  return request('/api/rennetpurchase/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
 
 export async function searchRennet(options) {
   return request('/api/rennetpurchase/search', {
