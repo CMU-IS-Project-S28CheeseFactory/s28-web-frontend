@@ -67,7 +67,9 @@ public class SalesorderController {
     }
 
     @PostMapping("/delete")
-    public boolean deleteSalesorder(String id) {
-        return salesorderService.removeById(id);
+    public void deleteSalesorder(@RequestBody SalesorderRequest request) {
+        Salesorder salesorder = new Salesorder();
+        salesorder.setSalesOrderID(request.getSalesOrderID());
+        salesorderService.removeById(salesorder);
     }
 }

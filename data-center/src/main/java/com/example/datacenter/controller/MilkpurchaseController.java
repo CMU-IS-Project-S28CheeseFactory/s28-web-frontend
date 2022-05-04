@@ -90,7 +90,9 @@ public class MilkpurchaseController {
     }
 
     @PostMapping("/delete")
-    public boolean deleteMilkpurchase(String id) {
-        return milkpurchaseService.removeById(id);
+    public void deleteMilkpurchase(@RequestBody MilkpurchaseRequest request) {
+        Milkpurchase milkpurchase = new Milkpurchase();
+        milkpurchase.setMilkOrderID(request.getMilkOrderID());
+        milkpurchaseService.removeById(milkpurchase);
     }
 }

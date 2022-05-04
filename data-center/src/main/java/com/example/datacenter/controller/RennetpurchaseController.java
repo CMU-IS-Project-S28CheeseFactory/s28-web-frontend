@@ -78,7 +78,9 @@ public class RennetpurchaseController {
     }
 
     @PostMapping("/delete")
-    public boolean deleteRennetpurchase(String id) {
-        return rennetpurchaseService.removeById(id);
+    public void deleteRennetpurchase(@RequestBody RennetpurchaseRequest request) {
+        Rennetpurchase rennetpurchase = new Rennetpurchase();
+        rennetpurchase.setRennetOrderID(request.getRennetOrderID());
+        rennetpurchaseService.removeById(rennetpurchase);
     }
 }
