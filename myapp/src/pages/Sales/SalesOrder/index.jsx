@@ -17,9 +17,9 @@ import UpdateForm from './components/UpdateForm';
 
 const handleAdd = async (fields) => {
   const hide = message.loading('正在添加');
-  console.log('addProduction:', fields);
+  console.log('addSalesOrder:', fields);
   try {
-    await addProduction(fields);
+    await addSalesOrder(fields);
     hide();
     message.success('Added successfully');
     return true;
