@@ -7,7 +7,7 @@ import {
 } from '@/services/ant-design-pro/prodprocess';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { ModalForm, ProFormDateTimePicker } from '@ant-design/pro-form';
+import { ModalForm, ProFormDateTimePicker, ProFormText } from '@ant-design/pro-form';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { Button, Drawer, Form, Input, message } from 'antd';
@@ -30,7 +30,7 @@ const handleAdd = async (fields) => {
     return true;
   } catch (error) {
     hide();
-    console.log("add error:", error);
+    console.log('add error:', error);
     message.error('Adding failed, please try again!');
     return false;
   }
@@ -95,6 +95,15 @@ const Productionprocess = () => {
   const [selectedRowsState, setSelectedRows] = useState([]);
 
   const [currentData, setCurrentData] = useState();
+  const [form] = Form.useForm();
+  form.setFieldsValue({
+    cheeseBatchCode: currentData ? currentData.cheeseBatchCode : {},
+    cheeseID: currentData ? currentData.cheeseBatchCode : {},
+    step1StartTemp: currentData ? currentData.step1StartTemp : {},
+    step1TA: currentData ? currentData.step1TA : {},
+    step1pH: currentData ? currentData.step1pH : {},
+  });
+
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -185,7 +194,13 @@ const Productionprocess = () => {
               shape="circle"
               icon={<DeleteOutlined />}
               disabled={item.default}
-              onClick={() => handleRemove(item)}
+              onClick={() => {
+                handleRemove(item);
+                // window.location.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }}
             />
           </div>
         );
@@ -263,7 +278,41 @@ const Productionprocess = () => {
           <Input />
         </Form.Item>
       </ModalForm>
-      <UpdateForm
+
+      {/* update form */}
+      <ModalForm
+        title="Update cheese batch information"
+        onFinish={async (value) => {
+          const success = await handleUpdate(value);
+          console.log('values at 250:', value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentData(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onVisibleChange={handleUpdateModalVisible}
+        visible={updateModalVisible}
+        form={form}
+        initialValues={{
+          cheeseBatchCode: currentData ? currentData.cheeseBatchCode : {},
+          cheeseID: currentData ? currentData.cheeseBatchCode : {},
+          step1StartTemp: currentData ? currentData.step1StartTemp : {},
+          step1TA: currentData ? currentData.step1TA : {},
+          step1pH: currentData ? currentData.step1pH : {},
+        }}
+      >
+        <ProFormText name="cheeseBatchCode" label={'cheeseBatchCode'} width="md" />
+        <ProFormText name="cheeseID" label={'cheeseID'} width="md" />
+        {/* <ProFormDateTimePicker name="step1StartTime" label={'step1StartTime'} width="md" /> */}
+        <ProFormText name="step1StartTemp" label={'step1StartTemp'} width="md" />
+        <ProFormText name="step1TA" label={'step1TA'} width="md" />
+        <ProFormText name="step1pH" label={'step1PH'} width="md" />
+      </ModalForm>
+
+      {/* <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           console.log('values at 250:', value);
@@ -286,7 +335,7 @@ const Productionprocess = () => {
         updateModalVisible={updateModalVisible}
         // values={currentRow || {}}
         values={currentData || {}}
-      />
+      /> */}
 
       <Drawer
         width={600}
