@@ -1,11 +1,16 @@
-import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
-import { searchProduction } from '@/services/ant-design-pro/prodprocess';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+// import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
+import {
+  addProduction,
+  deleteProduction,
+  searchProduction,
+  updateProduction,
+} from '@/services/ant-design-pro/prodprocess';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import { ModalForm, ProFormDateTimePicker, ProFormText } from '@ant-design/pro-form';
+import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer, message } from 'antd';
+import { Button, Drawer, Form, Input, message } from 'antd';
 import { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import UpdateForm from './components/UpdateForm';
@@ -17,14 +22,15 @@ import UpdateForm from './components/UpdateForm';
 
 const handleAdd = async (fields) => {
   const hide = message.loading('正在添加');
-
+  console.log('addProduction:', fields);
   try {
-    await addRule({ ...fields });
+    await addProduction(fields);
     hide();
     message.success('Added successfully');
     return true;
   } catch (error) {
     hide();
+    console.log('add error:', error);
     message.error('Adding failed, please try again!');
     return false;
   }
@@ -37,20 +43,17 @@ const handleAdd = async (fields) => {
  */
 
 const handleUpdate = async (fields) => {
-  const hide = message.loading('Configuring');
-
+  const hide = message.loading('Updating');
+  console.log('fields', fields);
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
+    await updateProduction(fields);
     hide();
-    message.success('Configuration is successful');
+    message.success('Updated successfully');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Updated failed, please try again!');
+    console.log('update error:', error);
     return false;
   }
 };
@@ -61,14 +64,12 @@ const handleUpdate = async (fields) => {
  * @param selectedRows
  */
 
-const handleRemove = async (selectedRows) => {
+const handleRemove = async (values) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-
+  if (!values) return true;
+  console.log('deletevalues:', values.props.record);
   try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
+    await deleteProduction(values.props.record);
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
@@ -78,81 +79,6 @@ const handleRemove = async (selectedRows) => {
     return false;
   }
 };
-
-const columns = [
-  {
-    dataIndex: 'id',
-    valueType: 'indexBorder',
-    width: 48,
-  },
-  {
-    title: 'CheeseBatchCode',
-    dataIndex: 'cheeseBatchCode',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'CheeseID',
-    dataIndex: 'cheeseID',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'CreateTime',
-    dataIndex: 'createTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'UpdateTime',
-    dataIndex: 'updateTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'IsDelete',
-    dataIndex: 'isDelete',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Step1StartTime',
-    dataIndex: 'step1StartTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Step1StartTemp',
-    dataIndex: 'step1StartTemp',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Step1pH',
-    dataIndex: 'step1pH',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Option',
-    valueType: 'option',
-    key: 'option',
-    render: (item) => {
-      return (
-        <div>
-          <Button
-            danger
-            type="primary"
-            shape="circle"
-            icon={<DeleteOutlined />}
-            disabled={item.default}
-            onClick={() => deleteMethod(item)}
-          />
-        </div>
-      );
-    },
-  },
-];
 
 const Productionprocess = () => {
   // 新建窗口的弹窗
@@ -167,12 +93,120 @@ const Productionprocess = () => {
   const actionRef = useRef();
   const [currentRow, setCurrentRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
+
+  const [currentData, setCurrentData] = useState();
+  const [form] = Form.useForm();
+  form.setFieldsValue({
+    cheeseBatchCode: currentData ? currentData.cheeseBatchCode : {},
+    cheeseID: currentData ? currentData.cheeseBatchCode : {},
+    step1StartTemp: currentData ? currentData.step1StartTemp : {},
+    step1TA: currentData ? currentData.step1TA : {},
+    step1pH: currentData ? currentData.step1pH : {},
+  });
+
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
 
   const intl = useIntl();
+
+  const columns = [
+    {
+      dataIndex: 'id',
+      valueType: 'indexBorder',
+      width: 48,
+    },
+    {
+      title: 'CheeseBatchCode',
+      dataIndex: 'cheeseBatchCode',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CheeseID',
+      dataIndex: 'cheeseID',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CreateTime',
+      dataIndex: 'createTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'UpdateTime',
+      dataIndex: 'updateTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'IsDelete',
+      dataIndex: 'isDelete',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Step1StartTime',
+      dataIndex: 'step1StartTime',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Step1StartTemp',
+      dataIndex: 'step1StartTemp',
+      copyable: true,
+      ellipsis: true,
+    },
+
+    {
+      title: 'Step1pH',
+      dataIndex: 'step1pH',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Step1TA',
+      dataIndex: 'step1TA',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Option',
+      valueType: 'option',
+      key: 'option',
+      render: (item) => {
+        return (
+          <div>
+            <Button
+              shape="circle"
+              icon={<EditOutlined />}
+              disabled={item.default}
+              onClick={async () => {
+                await setCurrentData(item.props.record);
+                await handleUpdateModalVisible(true);
+              }}
+            />
+            <Button
+              danger
+              type="primary"
+              shape="circle"
+              icon={<DeleteOutlined />}
+              disabled={item.default}
+              onClick={() => {
+                handleRemove(item);
+                // window.location.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }}
+            />
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <PageContainer>
@@ -206,68 +240,16 @@ const Productionprocess = () => {
           };
         }}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
-              &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
-                  defaultMessage="Total number of service calls"
-                />{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            <FormattedMessage
-              id="pages.searchTable.batchDeletion"
-              defaultMessage="Batch deletion"
-            />
-          </Button>
-          <Button type="primary">
-            <FormattedMessage
-              id="pages.searchTable.batchApproval"
-              defaultMessage="Batch approval"
-            />
-          </Button>
-        </FooterToolbar>
-      )}
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: 'New rule',
-        })}
+        title="New production batch"
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
+          console.log('value:', value);
           const success = await handleAdd(value);
-
+          console.log('268 success:', success);
           if (success) {
             handleModalVisible(false);
 
@@ -277,27 +259,63 @@ const Productionprocess = () => {
           }
         }}
       >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="Rule name is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc" />
+        <Form.Item name={['cheeseBatchCode']} label="cheeseBatchCode">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['cheeseID']} label="cheeseID">
+          <Input />
+        </Form.Item>
+        {/* <Form.Item name={['step1StartTime']} label="step1StartTime">
+          // {/* <Input />
+        </Form.Item> */}
+        <Form.Item name={['step1StartTemp']} label="step1StartTemp">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['step1TA']} label="step1TA">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['step1pH']} label="step1pH">
+          <Input />
+        </Form.Item>
       </ModalForm>
-      <UpdateForm
+
+      {/* update form */}
+      <ModalForm
+        title="Update cheese batch information"
+        onFinish={async (value) => {
+          const success = await handleUpdate(value);
+          console.log('values at 250:', value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentData(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onVisibleChange={handleUpdateModalVisible}
+        visible={updateModalVisible}
+        form={form}
+        initialValues={{
+          cheeseBatchCode: currentData ? currentData.cheeseBatchCode : {},
+          cheeseID: currentData ? currentData.cheeseBatchCode : {},
+          step1StartTemp: currentData ? currentData.step1StartTemp : {},
+          step1TA: currentData ? currentData.step1TA : {},
+          step1pH: currentData ? currentData.step1pH : {},
+        }}
+      >
+        <ProFormText name="cheeseBatchCode" label={'cheeseBatchCode'} width="md" />
+        <ProFormText name="cheeseID" label={'cheeseID'} width="md" />
+        {/* <ProFormDateTimePicker name="step1StartTime" label={'step1StartTime'} width="md" /> */}
+        <ProFormText name="step1StartTemp" label={'step1StartTemp'} width="md" />
+        <ProFormText name="step1TA" label={'step1TA'} width="md" />
+        <ProFormText name="step1pH" label={'step1PH'} width="md" />
+      </ModalForm>
+
+      {/* <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
-
+          console.log('values at 250:', value);
           if (success) {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
@@ -315,8 +333,9 @@ const Productionprocess = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      />
+        // values={currentRow || {}}
+        values={currentData || {}}
+      /> */}
 
       <Drawer
         width={600}

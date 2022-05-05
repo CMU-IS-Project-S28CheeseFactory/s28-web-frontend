@@ -5,7 +5,9 @@ import java.util.List;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.datacenter.model.domain.Calciumpurchase;
+import com.example.datacenter.model.domain.Productionprocess;
 import com.example.datacenter.model.domain.request.CalciumpurchaseRequest;
+import com.example.datacenter.model.domain.request.ProductionprocessRequest;
 import com.example.datacenter.service.CalciumpurchaseService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +19,8 @@ import javax.servlet.http.HttpServletRequest;
  * @create 2022-04-15 22:19
  */
 @RestController
-@RequestMapping("/caliumpurchase")
-public class CaliumpurchaseController {
+@RequestMapping("/calciumpurchase")
+public class CalciumpurchaseController {
 
     @Resource
     private CalciumpurchaseService calciumpurchaseService;
@@ -77,8 +79,10 @@ public class CaliumpurchaseController {
     }
 
     @PostMapping("/delete")
-    public boolean deleteCalciumpurchase(String id) {
-        return calciumpurchaseService.removeById(id);
+    public void deleteCalciumpurchase(@RequestBody CalciumpurchaseRequest request) {
+        Calciumpurchase calciumpurchase = new Calciumpurchase();
+        calciumpurchase.setCalciumOrderID(request.getCalciumOrderID());
+        calciumpurchaseService.removeById(calciumpurchase);
     }
 
 

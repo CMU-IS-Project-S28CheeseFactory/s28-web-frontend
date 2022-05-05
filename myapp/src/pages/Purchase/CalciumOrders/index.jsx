@@ -1,13 +1,13 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer } from 'antd';
+import {Form, Button, message, Input, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import {ModalForm, ProFormText, ProFormTextArea,ProFormDigit,ProFormDatePicker } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm from './components/UpdateForm';
-import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
+import { addCalciumpurchase,updateCalciumpurchase,searchCalciumpurchase,deleteCalciumpurchase } from '@/services/ant-design-pro/calciumpurchase';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -78,6 +78,28 @@ const handleRemove = async (selectedRows) => {
   }
 };
 
+// 删除方法
+const deleteMethod = (record) => {
+  
+  console.log(record.calciumOrderID);
+
+  const hide = message.loading('deleting');
+  // console.log(fields);
+  try {
+    deleteCalciumpurchase(record);
+    // 刷新
+    window.location.reload();
+    hide();
+    message.success('Deleted successfully');
+    return true;
+  } catch (error) {
+    hide();
+    console.log("95 error:",error);
+    message.error('Deleted failed, please try again!');
+    return false;
+  }
+};
+
 const TableList = () => {
   /**
    * @en-US Pop-up window of new window
@@ -94,6 +116,17 @@ const TableList = () => {
   const actionRef = useRef();
   const [currentRow, setCurrentRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
+  const [currentData, setCurrentData] = useState();
+  const [form]=Form.useForm();
+  form.setFieldsValue({
+    calciumOrderID:currentData?currentData.calciumOrderID:{},
+    supplierName:currentData?currentData.supplierName:{},
+    caClName:currentData?currentData.caClName:{},
+    caClBatchCode:currentData?currentData.caClBatchCode:{},
+    caClBestBefore:currentData?currentData.caClBestBefore:{},
+    caClOpenDate:currentData?currentData.caClOpenDate:{},
+    quantity:currentData?currentData.quantity:{}
+  })
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -104,120 +137,162 @@ const TableList = () => {
     {
       title: (
         <FormattedMessage
-          id="pages.searchTable.updateForm.ruleName.nameLabel"
-          defaultMessage="Rule name"
+          id="pages.calciumpurchase.CalciumOrderID.nameLabel"
+          defaultMessage="CalciumOrderID"
         />
       ),
-      dataIndex: 'name',
+      dataIndex: 'calciumOrderID',
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Description" />,
-      dataIndex: 'desc',
+      title: <FormattedMessage 
+      id="pages.calciumpurchase.supplierName" 
+      defaultMessage="supplierName" />,
+      dataIndex: 'supplierName',
+      valueType: 'textarea',
+    },
+    {
+      title: <FormattedMessage 
+      id="pages.calciumpurchase.caClName" 
+      defaultMessage="caClName" />,
+      dataIndex: 'caClName',
+      valueType: 'textarea',
+    },
+    {
+      title: <FormattedMessage 
+      id="pages.calciumpurchase.caClBatchCode" 
+      defaultMessage="caClBatchCode" />,
+      dataIndex: 'caClBatchCode',
       valueType: 'textarea',
     },
     {
       title: (
-        <FormattedMessage
-          id="pages.searchTable.titleCallNo"
-          defaultMessage="Number of service calls"
-        />
+        <>
+          caClBestBefore
+        </>
       ),
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
+      width: 140,
+      key: 'bestbefore',
+      dataIndex: 'caClBestBefore',
+      valueType: 'date',
+      sorter: (a, b) => a.caClBestBefore - b.caClBestBefore,
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
-      dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        0: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.default"
-              defaultMessage="Shut down"
-            />
-          ),
-          status: 'Default',
-        },
-        1: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
-          ),
-          status: 'Processing',
-        },
-        2: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
-          ),
-          status: 'Success',
-        },
-        3: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.abnormal"
-              defaultMessage="Abnormal"
-            />
-          ),
-          status: 'Error',
-        },
-      },
+      title: (
+        <>
+          caClOpenDate
+        </>
+      ),
+      width: 140,
+      key: 'opentime',
+      dataIndex: 'caClOpenDate',
+      valueType: 'date',
+      sorter: (a, b) => a.caClOpenDate - b.caClOpenDate,
     },
     {
       title: (
         <FormattedMessage
-          id="pages.searchTable.titleUpdatedAt"
-          defaultMessage="Last scheduled time"
+          id="pages.calciumpurchase.quantity"
+          defaultMessage="quantity"
         />
       ),
+      dataIndex: 'quantity',
       sorter: true,
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-
-        if (`${status}` === '0') {
-          return false;
-        }
-
-        if (`${status}` === '3') {
-          return (
-            <Input
-              {...rest}
-              placeholder={intl.formatMessage({
-                id: 'pages.searchTable.exception',
-                defaultMessage: 'Please enter the reason for the exception!',
-              })}
-            />
-          );
-        }
-
-        return defaultRender(item);
-      },
+      hideInForm: true,
     },
+    // {
+    //   title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
+    //   dataIndex: 'status',
+    //   hideInForm: true,
+    //   valueEnum: {
+    //     0: {
+    //       text: (
+    //         <FormattedMessage
+    //           id="pages.searchTable.nameStatus.default"
+    //           defaultMessage="Shut down"
+    //         />
+    //       ),
+    //       status: 'Default',
+    //     },
+    //     1: {
+    //       text: (
+    //         <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
+    //       ),
+    //       status: 'Processing',
+    //     },
+    //     2: {
+    //       text: (
+    //         <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
+    //       ),
+    //       status: 'Success',
+    //     },
+    //     3: {
+    //       text: (
+    //         <FormattedMessage
+    //           id="pages.searchTable.nameStatus.abnormal"
+    //           defaultMessage="Abnormal"
+    //         />
+    //       ),
+    //       status: 'Error',
+    //     },
+    //   },
+    // },
+    // {
+    //   title: (
+    //     <FormattedMessage
+    //       id="pages.searchTable.titleUpdatedAt"
+    //       defaultMessage="Last scheduled time"
+    //     />
+    //   ),
+    //   sorter: true,
+    //   dataIndex: 'updatedAt',
+    //   valueType: 'dateTime',
+    //   renderFormItem: (item, { defaultRender, ...rest }, form) => {
+    //     const status = form.getFieldValue('status');
+
+    //     if (`${status}` === '0') {
+    //       return false;
+    //     }
+
+    //     if (`${status}` === '3') {
+    //       return (
+    //         <Input
+    //           {...rest}
+    //           placeholder={intl.formatMessage({
+    //             id: 'pages.searchTable.exception',
+    //             defaultMessage: 'Please enter the reason for the exception!',
+    //           })}
+    //         />
+    //       );
+    //     }
+
+    //     return defaultRender(item);
+    //   },
+    // },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
         <a
-          key="config"
+          key="edit"
           onClick={() => {
             handleUpdateModalVisible(true);
-            setCurrentRow(record);
+            setCurrentData(record);
           }}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
+          <FormattedMessage id="pages.calciumpurchase.edit" defaultMessage="Edit" />
         </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
+        <a 
+        key="delete" 
+        style={{color:"red"}}
+        onClick={() =>{
+            deleteMethod(record);
+        }}
+        >
           <FormattedMessage
-            id="pages.searchTable.subscribeAlert"
-            defaultMessage="Subscribe to alerts"
+            id="pages.calciumpurchase.delete"
+            defaultMessage="Delete"
+            
           />
         </a>,
       ],
@@ -246,7 +321,14 @@ const TableList = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
         ]}
-        request={rule}
+        request={async (params = {}, sort, filter) => {
+          console.log(sort, filter);
+          const calciumpurchase = await searchCalciumpurchase();
+          console.log(calciumpurchase);
+          return {
+            data: calciumpurchase,
+          };
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -299,16 +381,18 @@ const TableList = () => {
           </Button>
         </FooterToolbar>
       )}
+      {/* add new record */}
       <ModalForm
         title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
+          id: 'pages.calciumpurchase.createForm.newRecord',
           defaultMessage: 'New rule',
         })}
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value);
+          console.log(value)
+          const success = await addCalciumpurchase(value);
 
           if (success) {
             handleModalVisible(false);
@@ -325,24 +409,86 @@ const TableList = () => {
               required: true,
               message: (
                 <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="Rule name is required"
+                  id="pages.calciumpurchase.calciumOrderID"
+                  defaultMessage="calciumOrderID is required"
                 />
               ),
             },
           ]}
           width="md"
-          name="name"
+          name="calciumOrderID"
+          label="calciumOrderID"
         />
-        <ProFormTextArea width="md" name="desc" />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.calciumpurchase.supplierName"
+                  defaultMessage="supplierName is required"
+                />
+              ),
+            },
+          ]}
+          width="md"
+          name="supplierName"
+          label="supplierName"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.calciumpurchase.caClName"
+                  defaultMessage="caClName is required"
+                />
+              ),
+            },
+          ]}
+          width="md"
+          name="caClName"
+          label="caClName"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.calciumpurchase.caClBatchCode"
+                  defaultMessage="caClBatchCode is required"
+                />
+              ),
+            },
+          ]}
+          width="md"
+          name="caClBatchCode"
+          label="caClBatchCode"
+        />
+        <ProFormDatePicker name="caClBestBefore" label="caClBestBefore" />
+        <ProFormDatePicker name="caClOpenDate" label="caClOpenDate" />
+        <ProFormDigit
+          label="quantity"
+          name="quantity"
+          min={1}
+          fieldProps={{ precision: 1 }}
+        />
       </ModalForm>
-      <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-
+      {/* update record */}
+      <ModalForm
+        title={intl.formatMessage({
+          id: 'pages.searchTable.createForm.updateRecord',
+          defaultMessage: 'update record',
+        })}
+        width="400px"
+        visible={updateModalVisible}
+        onVisibleChange={handleUpdateModalVisible}
+        onFinish={async (value) => {
+          const success = await updateCalciumpurchase(value);
           if (success) {
             handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
 
             if (actionRef.current) {
               actionRef.current.reload();
@@ -350,15 +496,93 @@ const TableList = () => {
           }
         }}
         onCancel={() => {
-          handleUpdateModalVisible(false);
-
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      />
+          console.log("499")
+          form.resetFields()}}
+        form={form}
+        // initialValues={{
+        //   'calciumOrderID':currentData?currentData.calciumOrderID:{},
+        //   'supplierName':currentData?currentData.supplierName:{},
+        //   'caClName':currentData?currentData.caClName:{},
+        //   'caClBatchCode':currentData?currentData.caClBatchCode:{},
+        //   'caClBestBefore':currentData?currentData.caClBestBefore:{},
+        //   'caClOpenDate':currentData?currentData.caClOpenDate:{},
+        //   'quantity':currentData?currentData.quantity:{}
+        // }}
+        initialValues={currentData}
+      >
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.calciumpurchase.calciumOrderID"
+                  defaultMessage="calciumOrderID is required"
+                />
+              ),
+            },
+          ]}
+          width="md"
+          name="calciumOrderID"
+          label="calciumOrderID"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.calciumpurchase.supplierName"
+                  defaultMessage="supplierName is required"
+                />
+              ),
+            },
+          ]}
+          width="md"
+          name="supplierName"
+          label="supplierName"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.calciumpurchase.caClName"
+                  defaultMessage="caClName is required"
+                />
+              ),
+            },
+          ]}
+          width="md"
+          name="caClName"
+          label="caClName"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.calciumpurchase.caClBatchCode"
+                  defaultMessage="caClBatchCode is required"
+                />
+              ),
+            },
+          ]}
+          width="md"
+          name="caClBatchCode"
+          label="caClBatchCode"
+        />
+        <ProFormDatePicker name="caClBestBefore" label="caClBestBefore" />
+        <ProFormDatePicker name="caClOpenDate" label="caClOpenDate" />
+        <ProFormDigit
+          label="quantity"
+          name="quantity"
+          min={1}
+          fieldProps={{ precision: 1 }}
+        />
+      </ModalForm>
 
       <Drawer
         width={600}
