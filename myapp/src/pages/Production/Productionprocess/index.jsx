@@ -95,6 +95,15 @@ const Productionprocess = () => {
   const [selectedRowsState, setSelectedRows] = useState([]);
 
   const [currentData, setCurrentData] = useState();
+  const [form] = Form.useForm();
+  form.setFieldsValue({
+    cheeseBatchCode: currentData ? currentData.cheeseBatchCode : {},
+    cheeseID: currentData ? currentData.cheeseBatchCode : {},
+    step1StartTemp: currentData ? currentData.step1StartTemp : {},
+    step1TA: currentData ? currentData.step1TA : {},
+    step1pH: currentData ? currentData.step1pH : {},
+  });
+
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -286,6 +295,7 @@ const Productionprocess = () => {
         }}
         onVisibleChange={handleUpdateModalVisible}
         visible={updateModalVisible}
+        form={form}
         initialValues={{
           cheeseBatchCode: currentData ? currentData.cheeseBatchCode : {},
           cheeseID: currentData ? currentData.cheeseBatchCode : {},
