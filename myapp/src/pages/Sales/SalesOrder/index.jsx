@@ -2,7 +2,7 @@
 import { addSalesOrder, searchSalesOrder, deleteSalesOrder, updateSalesOrder } from '@/services/ant-design-pro/salesorder';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { ModalForm } from '@ant-design/pro-form';
+import { ModalForm, ProFormText } from '@ant-design/pro-form';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { Button, Drawer, Form, Input, message } from 'antd';
@@ -89,6 +89,14 @@ const Salesorder = () => {
   const [currentRow, setCurrentRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
   const [currentData, setCurrentData] = useState();
+  const [form] = Form.useForm();
+  form.setFieldsValue({
+    salesOrderID: currentData ? currentData.salesOrderID : {},
+    cheeseWheelID: currentData ? currentData.cheeseWheelID : {},
+    buyerName: currentData ? currentData.buyerName : {},
+    time: currentData ? currentData.time : {},
+    weight: currentData ? currentData.weight : {},
+  });
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -166,7 +174,13 @@ const Salesorder = () => {
               shape="circle"
               icon={<DeleteOutlined />}
               disabled={item.default}
-              onClick={() => handleRemove(item)}
+              onClick={() => {
+                handleRemove(item);
+                // window.location.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }}
             />
           </div>
         );
@@ -208,7 +222,7 @@ const Salesorder = () => {
         }}
         columns={columns}
       />
-      <ModalForm
+      {/* <ModalForm
         title="New sales order"
         width="400px"
         visible={createModalVisible}
@@ -241,8 +255,40 @@ const Salesorder = () => {
         <Form.Item name={['weight']} label="weight">
           <Input />
         </Form.Item>
+      </ModalForm> */}
+
+      <ModalForm
+        title="Update sales batch information"
+        onFinish={async (value) => {
+          const success = await handleUpdate(value);
+          console.log('values at 250:', value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentData(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onVisibleChange={handleUpdateModalVisible}
+        visible={updateModalVisible}
+        form={form}
+        initialValues={{
+          salesOrderID: currentData ? currentData.salesOrderID : {},
+          cheeseWheelID: currentData ? currentData.cheeseWheelID : {},
+          buyerName: currentData ? currentData.buyerName : {},
+          time: currentData ? currentData.time : {},
+          weight: currentData ? currentData.weight : {},
+        }}
+      >
+        <ProFormText name="salesOrderID" label={'salesOrderID'} width="md" extra="ID cannot be changed." disabled/>
+        <ProFormText name="cheeseWheelID" label={'cheeseWheelID'} width="md" />
+        {/* <ProFormDateTimePicker name="step1StartTime" label={'step1StartTime'} width="md" /> */}
+        <ProFormText name="buyerName" label={'buyerName'} width="md" />
+        <ProFormText name="time" label={'time'} width="md" />
+        <ProFormText name="weight" label={'weight'} width="md" />
       </ModalForm>
-      <UpdateForm
+      {/* <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
 
@@ -264,7 +310,7 @@ const Salesorder = () => {
         }}
         updateModalVisible={updateModalVisible}
         values={currentData || {}}
-      />
+      /> */}
 
       <Drawer
         width={600}

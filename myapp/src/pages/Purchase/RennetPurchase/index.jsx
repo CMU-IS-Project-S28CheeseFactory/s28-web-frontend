@@ -91,6 +91,16 @@ const Rennetpurchase = () => {
   const [currentRow, setCurrentRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
   const [currentData, setCurrentData] = useState();
+  const [form] = Form.useForm();
+  form.setFieldsValue({
+    rennetOrderID: currentData ? currentData.rennetOrderID : {},
+    supplierName: currentData ? currentData.supplierName : {},
+    rennetName: currentData ? currentData.rennetName : {},
+    rennetBatchCode: currentData ? currentData.rennetBatchCode : {},
+    rennet_Best_Before: currentData ? currentData.rennet_Best_Before : {},
+    rennet_Open_Date: currentData ? currentData.rennet_Open_Date : {},
+    quantity: currentData ? currentData.quantity : {},
+  });
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -178,7 +188,13 @@ const Rennetpurchase = () => {
               shape="circle"
               icon={<DeleteOutlined />}
               disabled={item.default}
-              onClick={() => handleRemove(item)}
+              onClick={() => {
+                handleRemove(item);
+                // window.location.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }}
             />
           </div>
         );
@@ -313,7 +329,42 @@ const Rennetpurchase = () => {
         </Form.Item>
 
       </ModalForm>
-      <UpdateForm
+      
+      <ModalForm
+        title="Update rennet purchase information"
+        onFinish={async (value) => {
+          const success = await handleUpdate(value);
+          console.log('values at 250:', value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentData(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onVisibleChange={handleUpdateModalVisible}
+        visible={updateModalVisible}
+        form={form}
+        initialValues={{
+          rennetOrderID: currentData ? currentData.rennetOrderID : {},
+          supplierName: currentData ? currentData.supplierName : {},
+          rennetName: currentData ? currentData.rennetName : {},
+          rennetBatchCode: currentData ? currentData.rennetBatchCode : {},
+          rennet_Best_Before: currentData ? currentData.rennet_Best_Before : {},
+          rennet_Open_Date: currentData ? currentData.rennet_Open_Date : {},
+          quantity: currentData ? currentData.quantity : {},
+        }}
+      >
+        <ProFormText name="rennetOrderID" label={'rennetOrderID'} width="md" extra="ID cannot be changed." disabled />
+        <ProFormText name="supplierName" label={'supplierName'} width="md" />
+        <ProFormText name="rennetName" label={'rennetName'} width="md" />
+        <ProFormText name="rennetBatchCode" label={'rennetBatchCode'} width="md" />
+        <ProFormText name="rennet_Best_Before" label={'rennet_Best_Before'} width="md" />
+        <ProFormText name="rennet_Open_Date" label={'rennet_Open_Date'} width="md" />
+        <ProFormText name="quantity" label={'quantity'} width="md" />
+      </ModalForm>
+      {/* <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
 
@@ -335,7 +386,7 @@ const Rennetpurchase = () => {
         }}
         updateModalVisible={updateModalVisible}
         values={currentData || {}}
-      />
+      /> */}
 
       <Drawer
         width={600}

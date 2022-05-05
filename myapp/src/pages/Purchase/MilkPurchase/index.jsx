@@ -114,120 +114,6 @@ const deleteMethod = (item) => {
   }
 };
 
-const columns = [
-  {
-    dataIndex: 'id',
-    valueType: 'indexBorder',
-    width: 48,
-  },
-  {
-    title: 'Milk Order ID',
-    dataIndex: 'milkOrderID',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'MilkOrderDate',
-    dataIndex: 'milkOrderDate',
-    valueType: 'dateTime',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'SupplierName',
-    dataIndex: 'supplierName',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'MilkBatchCode',
-    dataIndex: 'milkBatchCode',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'MilkDeliveryVolume',
-    dataIndex: 'milkDeliveryVolume',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'MilkDelvoTestResult',
-    dataIndex: 'milkDelvoTestResult',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title:'MilkPH',
-    dataIndex: 'milkPH',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'MilkTotalAcidity',
-    dataIndex: 'milkTotalAcidity',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'MilkTempAtCollection',
-    dataIndex: 'milkTempAtCollection',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'MilkTempAtDelivery',
-    dataIndex: 'milkTempAtDelivery',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'MilkFat',
-    dataIndex: 'milkFat',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'MilkSolidNonFat',
-    dataIndex: 'milkSolidNonFat',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'MilkProtein',
-    dataIndex: 'milkProtein',
-    copyable: true,
-    ellipsis: true,
-  },
-  {
-    title: 'Option',
-    valueType: 'option',
-    key: 'option',
-    render: (item) => {
-      return (
-        <div>
-        <Button
-                shape="circle"
-                icon={<EditOutlined />}
-                disabled={item.default}
-                onClick={async () => {
-                  await setCurrentData(item.props.record);
-                  await handleUpdateModalVisible(true);
-                }}
-              />
-          <Button
-            danger
-            type="primary"
-            shape="circle"
-            icon={<DeleteOutlined />}
-            disabled={item.default}
-            onClick={() => handleRemove(item)}
-          />
-        </div>
-      );
-    },
-  },
-];
 
 const Milkpurchase = () => {
   const updateForm = useRef(null);
@@ -245,6 +131,22 @@ const Milkpurchase = () => {
   const [showDetail, setShowDetail] = useState(false);
   const [currentData, setCurrentData] = useState();
   const actionRef = useRef();
+  const [form] = Form.useForm();
+  form.setFieldsValue({
+    milkOrderID: currentData ? currentData.milkOrderID : {},
+    milkOrderDate: currentData ? currentData.milkOrderDate : {},
+    supplierName: currentData ? currentData.supplierName : {},
+    milkBatchCode: currentData ? currentData.milkBatchCode : {},
+    milkDeliveryVolume: currentData ? currentData.milkDeliveryVolume : {},
+    milkDelvoTestResult: currentData ? currentData.milkDelvoTestResult : {},
+    milkPH: currentData ? currentData.milkPH : {},
+    milkTotalAcidity: currentData ? currentData.milkTotalAcidity : {},
+    milkTempAtCollection: currentData ? currentData.milkTempAtCollection : {},
+    milkTempAtDelivery: currentData ? currentData.milkTempAtDelivery : {},
+    milkFat: currentData ? currentData.milkFat : {},
+    milkSolidNonFat: currentData ? currentData.milkSolidNonFat : {},
+    milkProtein: currentData ? currentData.milkProtein : {},
+  });
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -359,7 +261,13 @@ const Milkpurchase = () => {
               shape="circle"
               icon={<DeleteOutlined />}
               disabled={item.default}
-              onClick={() => handleRemove(item)}
+              onClick={() => {
+                handleRemove(item);
+                // window.location.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }}
             />
           </div>
         );
@@ -443,7 +351,6 @@ const Milkpurchase = () => {
           }
         }}
       >
-        {/* add new user */}
 
         <Form.Item name={['milkOrderID']} label="milkOrderID">
           <Input />
@@ -488,8 +395,55 @@ const Milkpurchase = () => {
           <Input />
         </Form.Item>
       </ModalForm>
+      
+      <ModalForm
+        title="Update milk purchase information"
+        onFinish={async (value) => {
+          const success = await handleUpdate(value);
+          console.log('values at 250:', value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentData(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onVisibleChange={handleUpdateModalVisible}
+        visible={updateModalVisible}
+        form={form}
+        initialValues={{
+          milkOrderID: currentData ? currentData.milkOrderID : {},
+          milkOrderDate: currentData ? currentData.milkOrderDate : {},
+          supplierName: currentData ? currentData.supplierName : {},
+          milkBatchCode: currentData ? currentData.milkBatchCode : {},
+          milkDeliveryVolume: currentData ? currentData.milkDeliveryVolume : {},
+          milkDelvoTestResult: currentData ? currentData.milkDelvoTestResult : {},
+          milkPH: currentData ? currentData.milkPH : {},
+          milkTotalAcidity: currentData ? currentData.milkTotalAcidity : {},
+          milkTempAtCollection: currentData ? currentData.milkTempAtCollection : {},
+          milkTempAtDelivery: currentData ? currentData.milkTempAtDelivery : {},
+          milkFat: currentData ? currentData.milkFat : {},
+          milkSolidNonFat: currentData ? currentData.milkSolidNonFat : {},
+          milkProtein: currentData ? currentData.milkProtein : {},
+        }}
+      >
+        <ProFormText name="milkOrderID" label={'milkOrderID'} width="md" extra="ID cannot be changed." disabled />
+        <ProFormText name="milkOrderDate" label={'milkOrderDate'} width="md" />
+        <ProFormText name="supplierName" label={'supplierName'} width="md" />
+        <ProFormText name="milkBatchCode" label={'milkBatchCode'} width="md" />
+        <ProFormText name="milkDeliveryVolume" label={'milkDeliveryVolume'} width="md" />
+        <ProFormText name="milkDelvoTestResult" label={'milkDelvoTestResult'} width="md" />
+        <ProFormText name="milkPH" label={'milkPH'} width="md" />
+        <ProFormText name="milkTotalAcidity" label={'milkTotalAcidity'} width="md" />
+        <ProFormText name="milkTempAtCollection" label={'milkTempAtCollection'} width="md" />
+        <ProFormText name="milkTempAtDelivery" label={'milkTempAtDelivery'} width="md" />
+        <ProFormText name="milkFat" label={'milkFat'} width="md" />
+        <ProFormText name="milkSolidNonFat" label={'milkSolidNonFat'} width="md" />
+        <ProFormText name="milkProtein" label={'milkProtein'} width="md" />
+      </ModalForm>
 
-      <UpdateForm
+      {/* <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
 
@@ -511,7 +465,7 @@ const Milkpurchase = () => {
         }}
         updateModalVisible={updateModalVisible}
         values={currentData || {}}
-      />
+      /> */}
       <Drawer
         width={600}
         visible={showDetail}
