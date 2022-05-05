@@ -73,6 +73,11 @@ export default [
         path: '/purchase/rennet_purchase',
         name: 'Rennet Purchase',
         component: './Purchase/RennetPurchase'
+      },
+      {
+        path: '/purchase/culturepurchase',
+        name: 'Culture Purchase',
+        component: './Purchase/CulturePurchase'
       }
     ]
   },
