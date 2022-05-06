@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 
@@ -137,8 +138,8 @@ public class ProductionprocessController {
         prodprcss.setStep20pH(prodprcssRequest.getStep20pH());
         prodprcss.setStep20TA(prodprcssRequest.getStep20TA());
 
-        prodprcss.setCreateTime(prodprcssRequest.getCreateTime());
-        prodprcss.setUpdateTime(prodprcssRequest.getUpdateTime());
+        prodprcss.setCreateTime(new Date());
+        prodprcss.setUpdateTime(new Date());
         prodprcss.setIsDelete(prodprcssRequest.getIsDelete());
 
         prodprocessService.saveOrUpdate(prodprcss);
