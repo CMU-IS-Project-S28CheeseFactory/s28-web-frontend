@@ -6,21 +6,19 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import {ModalForm, ProFormText, ProFormTextArea,ProFormDigit,ProFormDatePicker } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
-// import UpdateForm from './components/UpdateForm';
 import { addCalciumpurchase,updateCalciumpurchase,searchCalciumpurchase,deleteCalciumpurchase } from '@/services/ant-design-pro/calciumpurchase';
-import { searchCulturePurchase } from '@/services/ant-design-pro/culturepurchase';
+import { addCulturepurchase,updateCulturepurchase,searchCulturePurchase,deleteCulturepurchase } from '@/services/ant-design-pro/culturepurchase';
 
 /**
  * @en-US Add node
  * @zh-CN 添加节点
  * @param fields
  */
-
-const handleAdd = async (fields) => {
+ const handleAdd = async (fields) => {
   const hide = message.loading('正在添加');
-
+  console.log('addCulturepurchase:', fields);
   try {
-    await addRule({ ...fields });
+    await addCulturepurchase(fields);
     hide();
     message.success('Added successfully');
     return true;
@@ -30,46 +28,41 @@ const handleAdd = async (fields) => {
     return false;
   }
 };
+
 /**
  * @en-US Update node
  * @zh-CN 更新节点
  *
  * @param fields
  */
-
-const handleUpdate = async (fields) => {
-  const hide = message.loading('Configuring');
-
+ const handleUpdate = async (fields) => {
+  const hide = message.loading('Updating');
+  console.log('fields', fields);
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
+    await updateCulturepurchase(fields);
     hide();
-    message.success('Configuration is successful');
+    message.success('Updated successfully');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Updated failed, please try again!');
+    console.log('update error:', error);
     return false;
   }
 };
+
 /**
  *  Delete node
  * @zh-CN 删除节点
  *
  * @param selectedRows
  */
-
-const handleRemove = async (selectedRows) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-
+const handleRemove = async (values) => {
+  const hide = message.loading('Deleting');
+  if (!values) return true;
+  console.log('deletevalues:', values.props.record);
   try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
+    await deleteCulturepurchase(values.props.record);
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
@@ -82,12 +75,13 @@ const handleRemove = async (selectedRows) => {
 
 // 删除方法
 const deleteMethod = (record) => {
-  console.log(record.calciumOrderID);
+  
+  console.log(record.CultureOrderID);
 
   const hide = message.loading('deleting');
   // console.log(fields);
   try {
-    deleteCalciumpurchase(record);
+    deleteCulturepurchase(record);
     // 刷新
     window.location.reload();
     hide();
@@ -101,7 +95,9 @@ const deleteMethod = (record) => {
   }
 };
 
+
 const CulturePurchase = () => {
+  const updateForm = useRef(null);
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -111,23 +107,22 @@ const CulturePurchase = () => {
    * @en-US The pop-up window of the distribution update window
    * @zh-CN 分布更新窗口的弹窗
    * */
-
+  const [currentRow, setCurrentRow] = useState();
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
-  const actionRef = useRef();
-  const [currentRow, setCurrentRow] = useState();
-  const [selectedRowsState, setSelectedRows] = useState([]);
   const [currentData, setCurrentData] = useState();
-  const [form]=Form.useForm();
+  const actionRef = useRef();
+  const [form] = Form.useForm();
   form.setFieldsValue({
-    calciumOrderID:currentData?currentData.calciumOrderID:{},
-    supplierName:currentData?currentData.supplierName:{},
-    caClName:currentData?currentData.caClName:{},
-    caClBatchCode:currentData?currentData.caClBatchCode:{},
-    caClBestBefore:currentData?currentData.caClBestBefore:{},
-    caClOpenDate:currentData?currentData.caClOpenDate:{},
-    quantity:currentData?currentData.quantity:{}
-  })
+    cultureOrderID: currentData ? currentData.cultureOrderID : {},
+    supplierName: currentData ? currentData.supplierName : {},
+    cultureName: currentData ? currentData.cultureName : {},
+    cultureBatchCode: currentData ? currentData.cultureBatchCode : {},
+    cultureBestBefore: currentData ? currentData.cultureBestBefore : {},
+    cultureOpenDate: currentData ? currentData.cultureOpenDate : {},
+    quantity: currentData ? currentData.quantity : {},
+  });
+
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -149,6 +144,36 @@ const CulturePurchase = () => {
     {
       title: 'SupplierName',
       dataIndex: 'supplierName',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CultureName',
+      dataIndex: 'cultureName',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CultureBatchCode',
+      dataIndex: 'cultureBatchCode',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CultureBestBefore',
+      dataIndex: 'cultureBestBefore',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CultureOpenDate',
+      dataIndex: 'cultureOpenDate',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
       copyable: true,
       ellipsis: true,
     },
@@ -190,100 +215,71 @@ const CulturePurchase = () => {
 
 
   return (
-    <PageContainer>
+    <div>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        columns={columns}
         actionRef={actionRef}
-        rowKey="key"
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-          </Button>,
-        ]}
+        scroll={{ x: "auto" }}
+        cardBordered
         request={async (params = {}, sort, filter) => {
-          console.log("210:", sort, filter);
+          console.log('sort filter:', sort, filter);
           const culturepurchase = await searchCulturePurchase();
           console.log("culturepurchase:", culturepurchase);
           return {
             data: culturepurchase,
           };
         }}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
+        editable={{
+          type: 'multiple',
+        }}
+        columnsState={{
+          persistenceKey: 'pro-table-singe-demos',
+          persistenceType: 'localStorage',
+          onChange(value) {
+            console.log('value: ', value);
           },
         }}
-      />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
-              &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
-                  defaultMessage="Total number of service calls"
-                />{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
-              </span>
-            </div>
-          }
-        >
+        rowKey="id"
+        search={{
+          labelWidth: 'auto',
+        }}
+        form={{
+          // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
+          syncToUrl: (values, type) => {
+            if (type === 'get') {
+              return Object.assign(Object.assign({}, values), {
+                created_at: [values.startTime, values.endTime],
+              });
+            }
+            return values;
+          },
+        }}
+        pagination={{
+          pageSize: 5,
+        }}
+        dateFormatter="string"
+        headerTitle="Culture Purchase"
+        toolBarRender={() => [
           <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
+            key="button"
+            onClick={() => {
+              handleModalVisible(true);
             }}
+            icon={<PlusOutlined />}
+            type="primary"
           >
-            <FormattedMessage
-              id="pages.searchTable.batchDeletion"
-              defaultMessage="Batch deletion"
-            />
-          </Button>
-          <Button type="primary">
-            <FormattedMessage
-              id="pages.searchTable.batchApproval"
-              defaultMessage="Batch approval"
-            />
-          </Button>
-        </FooterToolbar>
-      )}
-      {/* add new record */}
+            Add
+          </Button>,
+        ]}
+      />
+      {/* <UserForm roleList={roleList} ref={updateForm}></UserForm> */}
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.calciumpurchase.createForm.newRecord',
-          defaultMessage: 'New rule',
-        })}
+        title="Add new culture purchase"
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          console.log(value)
-          const success = await addCalciumpurchase(value);
+          const success = await handleAdd(value);
 
           if (success) {
             handleModalVisible(false);
@@ -294,92 +290,72 @@ const CulturePurchase = () => {
           }
         }}
       >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.calciumpurchase.calciumOrderID"
-                  defaultMessage="calciumOrderID is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="calciumOrderID"
-          label="calciumOrderID"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.calciumpurchase.supplierName"
-                  defaultMessage="supplierName is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="supplierName"
-          label="supplierName"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.calciumpurchase.caClName"
-                  defaultMessage="caClName is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="caClName"
-          label="caClName"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.calciumpurchase.caClBatchCode"
-                  defaultMessage="caClBatchCode is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="caClBatchCode"
-          label="caClBatchCode"
-        />
-        <ProFormDatePicker name="caClBestBefore" label="caClBestBefore" />
-        <ProFormDatePicker name="caClOpenDate" label="caClOpenDate" />
-        <ProFormDigit
-          label="quantity"
-          name="quantity"
-          min={1}
-          fieldProps={{ precision: 1 }}
-        />
+
+        <Form.Item name={['cultureOrderID']} label="cultureOrderID">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['supplierName']} label="supplierName">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['cultureName']} label="cultureName">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['cultureBatchCode']} label="cultureBatchCode">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['cultureBestBefore']} label="cultureBestBefore">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['cultureOpenDate']} label="cultureOpenDate">
+          <Input />
+        </Form.Item>
+        <Form.Item name={['quantity']} label="quantity">
+          <Input />
+        </Form.Item>
       </ModalForm>
-      {/* update record */}
+      
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.updateRecord',
-          defaultMessage: 'update record',
-        })}
-        width="400px"
-        visible={updateModalVisible}
-        onVisibleChange={handleUpdateModalVisible}
+        title="Update culture purchase information"
         onFinish={async (value) => {
-          const success = await updateCalciumpurchase(value);
+          const success = await handleUpdate(value);
+          console.log('values at 250:', value);
           if (success) {
             handleUpdateModalVisible(false);
+            setCurrentData(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onVisibleChange={handleUpdateModalVisible}
+        visible={updateModalVisible}
+        form={form}
+        initialValues={{
+          cultureOrderID: currentData ? currentData.cultureOrderID : {},
+          supplierName: currentData ? currentData.supplierName : {},
+          cultureName: currentData ? currentData.cultureName : {},
+          cultureBatchCode: currentData ? currentData.cultureBatchCode : {},
+          cultureBestBefore: currentData ? currentData.cultureBestBefore : {},
+          cultureOpenDate: currentData ? currentData.cultureOpenDate : {},
+          quantity: currentData ? currentData.quantity : {},
+        }}
+      >
+        <ProFormText name="cultureOrderID" label={'cultureOrderID'} width="md" extra="ID cannot be changed." disabled />
+        <ProFormText name="supplierName" label={'supplierName'} width="md" />
+        <ProFormText name="cultureName" label={'cultureName'} width="md" />
+        <ProFormText name="cultureBatchCode" label={'cultureBatchCode'} width="md" />
+        <ProFormText name="cultureBestBefore" label={'cultureBestBefore'} width="md" />
+        <ProFormText name="cultureOpenDate" label={'cultureOpenDate'} width="md" />
+        <ProFormText name="quantity" label={'quantity'} width="md" />
+      </ModalForm>
+
+      {/* <UpdateForm
+        onSubmit={async (value) => {
+          const success = await handleUpdate(value);
+
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
 
             if (actionRef.current) {
               actionRef.current.reload();
@@ -387,94 +363,15 @@ const CulturePurchase = () => {
           }
         }}
         onCancel={() => {
-          console.log("499")
-          form.resetFields()}}
-        form={form}
-        // initialValues={{
-        //   'calciumOrderID':currentData?currentData.calciumOrderID:{},
-        //   'supplierName':currentData?currentData.supplierName:{},
-        //   'caClName':currentData?currentData.caClName:{},
-        //   'caClBatchCode':currentData?currentData.caClBatchCode:{},
-        //   'caClBestBefore':currentData?currentData.caClBestBefore:{},
-        //   'caClOpenDate':currentData?currentData.caClOpenDate:{},
-        //   'quantity':currentData?currentData.quantity:{}
-        // }}
-        initialValues={currentData}
-      >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.calciumpurchase.calciumOrderID"
-                  defaultMessage="calciumOrderID is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="calciumOrderID"
-          label="calciumOrderID"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.calciumpurchase.supplierName"
-                  defaultMessage="supplierName is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="supplierName"
-          label="supplierName"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.calciumpurchase.caClName"
-                  defaultMessage="caClName is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="caClName"
-          label="caClName"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.calciumpurchase.caClBatchCode"
-                  defaultMessage="caClBatchCode is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="caClBatchCode"
-          label="caClBatchCode"
-        />
-        <ProFormDatePicker name="caClBestBefore" label="caClBestBefore" />
-        <ProFormDatePicker name="caClOpenDate" label="caClOpenDate" />
-        <ProFormDigit
-          label="quantity"
-          name="quantity"
-          min={1}
-          fieldProps={{ precision: 1 }}
-        />
-      </ModalForm>
+          handleUpdateModalVisible(false);
 
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        updateModalVisible={updateModalVisible}
+        values={currentData || {}}
+      /> */}
       <Drawer
         width={600}
         visible={showDetail}
@@ -498,7 +395,7 @@ const CulturePurchase = () => {
           />
         )}
       </Drawer>
-    </PageContainer>
+    </div>
   );
 };
 
