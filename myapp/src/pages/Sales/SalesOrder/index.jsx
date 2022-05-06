@@ -1,11 +1,11 @@
 // import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
-import { addSalesOrder, searchSalesOrder, deleteSalesOrder, updateSalesOrder } from '@/services/ant-design-pro/salesorder';
+import { addSalesOrder, searchSalesOrder, deleteSalesOrder, updateSalesOrder, searchSameBatch } from '@/services/ant-design-pro/salesorder';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { ModalForm, ProFormText } from '@ant-design/pro-form';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer, Form, Input, message } from 'antd';
+import { Button, Drawer, Form, Input, message, Table } from 'antd';
 import { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import UpdateForm from './components/UpdateForm';
@@ -89,6 +89,11 @@ const Salesorder = () => {
   const [currentRow, setCurrentRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
   const [currentData, setCurrentData] = useState();
+  const [trackingModalVisible, handleTrackingModalVisible] = useState(false);
+  const [trackingTableVisible, setTrackingTableVisible] = useState(false);
+  const [currentSaleOrder, setCurrentSaleOrder] = useState("");
+
+
   const [form] = Form.useForm();
   form.setFieldsValue({
     salesOrderID: currentData ? currentData.salesOrderID : {},
@@ -97,6 +102,11 @@ const Salesorder = () => {
     time: currentData ? currentData.time : {},
     weight: currentData ? currentData.weight : {},
   });
+
+  const [sameBatchData] = Form.useForm();
+  sameBatchData.setFieldsValue({
+
+  })
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -188,6 +198,26 @@ const Salesorder = () => {
     },
   ];
 
+  const trackingColumns = [
+    {
+      dataIndex: 'id',
+      valueType: 'indexBorder',
+      width: 48,
+    },
+    {
+      title: 'CheeseWheelID',
+      dataIndex: 'cheeseWheelID',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: 'CheeseBatchCode',
+      dataIndex: 'cheeseBatchCode',
+      copyable: true,
+      ellipsis: true,
+    }
+  ];
+
   return (
     <PageContainer>
       <ProTable
@@ -211,6 +241,15 @@ const Salesorder = () => {
           >
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => {
+              handleTrackingModalVisible(true);
+            }}
+          >
+            <PlusOutlined /> <FormattedMessage id="Order Tracking" />
+          </Button>
         ]}
         request={async (params = {}, sort, filter) => {
           console.log('sort filter:', sort, filter);
@@ -222,7 +261,9 @@ const Salesorder = () => {
         }}
         columns={columns}
       />
-      {/* <ModalForm
+
+      {/* add form */}
+      <ModalForm
         title="New sales order"
         width="400px"
         visible={createModalVisible}
@@ -255,8 +296,9 @@ const Salesorder = () => {
         <Form.Item name={['weight']} label="weight">
           <Input />
         </Form.Item>
-      </ModalForm> */}
+      </ModalForm>
 
+      {/* update form */}
       <ModalForm
         title="Update sales batch information"
         onFinish={async (value) => {
@@ -288,29 +330,34 @@ const Salesorder = () => {
         <ProFormText name="time" label={'time'} width="md" />
         <ProFormText name="weight" label={'weight'} width="md" />
       </ModalForm>
-      {/* <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
 
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
+      {/* tracking form */}
+      <ModalForm
+        title="Search sales order information"
+        onFinish={async (value) => {
+          setCurrentSaleOrder(value);
+          setTrackingTableVisible(true);
         }}
-        onCancel={() => {
-          handleUpdateModalVisible(false);
-
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentData || {}}
-      /> */}
+        onVisibleChange={handleTrackingModalVisible}
+        visible={trackingModalVisible}
+      >
+        <ProFormText name="salesOrderID"/>
+        <ProTable
+          visible={trackingTableVisible}
+          onVisibleChange={setTrackingTableVisible}
+          search={false}
+          headerTitle="Problematic cheese of the same batch"
+          request={async (params = {}, sort, filter) => {
+            console.log("stucked here:");
+            const sameBatch = await searchSameBatch();
+            console.log('sameBatch:', sameBatch);
+            return {
+              data: sameBatch,
+            };
+          }}
+          columns={trackingColumns}
+        />
+      </ModalForm>
 
       <Drawer
         width={600}

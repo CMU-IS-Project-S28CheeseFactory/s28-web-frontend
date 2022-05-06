@@ -39,3 +39,14 @@ export async function deleteSalesOrder(body, options) {
     ...(options || {}),
   });
 }
+
+export async function searchSameBatch(body, options) {
+  return request('/api/salesorder/tracking', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
