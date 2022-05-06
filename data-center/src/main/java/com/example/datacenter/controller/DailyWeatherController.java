@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -45,16 +47,20 @@ public class DailyWeatherController {
     }
 
     @PostMapping("/update")
-    public String updateDailyweather(@RequestBody DailyweatherRequest dailyweatherRequest) {
+    public String updateDailyweather(@RequestBody DailyweatherRequest dailyweatherRequest) throws ParseException {
 
-        String dateID = dailyweatherRequest.getDateTime();
+        Date dateID = dailyweatherRequest.getDateTime();
+//        System.out.println("!53---"+dateID);
         if (dateID==null){
             return "null";
         }
+//        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd ");
+
         Dailyweather dailyweather = new Dailyweather();
-        dailyweather.setDateTime(dailyweather.getDateTime());
-        dailyweather.setTemperature(dailyweather.getTemperature());
-        dailyweather.setWeatherType(dailyweather.getWeatherType());
+//        System.out.println("!59-----"+dailyweather.getDateTime());
+        dailyweather.setDateTime(dailyweatherRequest.getDateTime());
+        dailyweather.setTemperature(dailyweatherRequest.getTemperature());
+        dailyweather.setWeatherType(dailyweatherRequest.getWeatherType());
         dailyweather.setCreateTime(new Date());
         dailyweather.setUpdateTime(new Date());
         dailyweather.setIsDelete(0);

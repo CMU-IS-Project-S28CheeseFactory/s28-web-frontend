@@ -19,7 +19,7 @@ public class Dailyweather implements Serializable {
      * 
      */
     @TableId
-    private String dateTime;
+    private Date dateTime;
 
     /**
      * 
