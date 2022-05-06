@@ -12,7 +12,6 @@ import java.util.Date;
 @Data
 public class CulturepurchaseRequest implements Serializable {
 
-
     private static final long serialVersionUID = 1519201946787515795L;
 
     private String cultureOrderID;
