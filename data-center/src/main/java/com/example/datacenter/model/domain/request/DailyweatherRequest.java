@@ -14,7 +14,7 @@ public class DailyweatherRequest implements Serializable {
 
     private static final long serialVersionUID = -1150868824198828494L;
 
-    private String dateTime;
+    private Date dateTime;
 
     private Double temperature;
 
