@@ -41,10 +41,8 @@ public class CheeseinfoController {
         cheeseinfo.setRennetWeight(cheeseinfoRequest.getRennetWeight());
         cheeseinfo.setCaClBatchCode(cheeseinfoRequest.getCaClBatchCode());
         cheeseinfo.setCaClWeight(cheeseinfoRequest.getCaClWeight());
-        cheeseinfo.setCultureInfo((JsonObject) (cheeseinfoRequest.getCultureInfo()));
+        cheeseinfo.setCultureInfo(cheeseinfoRequest.getCultureInfo());
 
-
-        System.out.println("40-------"+cheeseinfoRequest.getCultureInfo());
         cheeseinfo.setCreateTime(new Date());
         cheeseinfo.setUpdateTime(new Date());
         cheeseinfo.setIsDelete(0);
