@@ -82,6 +82,29 @@ export default [
     ]
   },
   {
+    name: 'Information',
+    icon: 'table',
+    path: '/information',
+    component: './Information',
+    routes: [
+      {
+        path: '/information/cheeseinfo',
+        name: 'Cheese Info',
+        component: './Information/CheeseInfo'
+      },
+      {
+        path: '/information/cutwheelinfo',
+        name: 'Cut Wheel Info',
+        component: './Information/CutWheelInfo'
+      },
+      {
+        path: '/information/dailyweather',
+        name: 'Daily Weather',
+        component: './Information/DailyWeather'
+      }
+    ]
+  },
+  {
     name: 'Production',
     icon: 'table',
     path: '/production',
