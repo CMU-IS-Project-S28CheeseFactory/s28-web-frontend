@@ -8,12 +8,7 @@ const Admin = (props) => {
   const { children } = props;
   const intl = useIntl();
   return (
-    <PageHeaderWrapper
-      content={intl.formatMessage({
-        id: 'pages.admin.subPage.title',
-        defaultMessage: 'This page can only be viewed by admin',
-      })}
-    >
+    <PageHeaderWrapper>
       {children}
     </PageHeaderWrapper>
   );

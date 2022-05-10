@@ -61,7 +61,7 @@ export default [
     routes: [
       {
         path: '/purchase/calcium_orders',
-        name: 'calcium orders',
+        name: 'Calcium Purchase',
         component: './Purchase/CalciumOrders',
       },
       {
@@ -112,7 +112,7 @@ export default [
     routes: [
       {
         path: '/production/productionprocess',
-        name: 'production process',
+        name: 'Production Process',
         component: './Production/Productionprocess',
       }
     ]
@@ -125,7 +125,7 @@ export default [
     routes: [
       {
         path: '/sales/salesorder',
-        name: 'sales order',
+        name: 'Sales Order',
         component: './Sales/SalesOrder',
       }
     ]

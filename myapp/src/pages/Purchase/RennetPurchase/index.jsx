@@ -203,7 +203,7 @@ const Rennetpurchase = () => {
   ];
 
   return (
-    <PageContainer>
+    <div>
       <ProTable
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
@@ -411,7 +411,7 @@ const Rennetpurchase = () => {
           />
         )}
       </Drawer>
-    </PageContainer>
+    </div>
   );
 };
 
