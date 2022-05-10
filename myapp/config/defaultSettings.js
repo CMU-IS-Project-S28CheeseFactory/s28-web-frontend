@@ -7,9 +7,9 @@ const Settings = {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Ant Design Pro',
+  title: 'S28 System',
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: 'https://static.wixstatic.com/media/f8dfe1_d7c1ad68b78c4ae2a8ae37bb709a3951~mv2.jpg/v1/fill/w_2040,h_2048,al_c,q_85/f8dfe1_d7c1ad68b78c4ae2a8ae37bb709a3951~mv2.jpg',
   iconfontUrl: '',
 };
 export default Settings;
