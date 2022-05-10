@@ -219,7 +219,7 @@ const Salesorder = () => {
   ];
 
   return (
-    <PageContainer>
+    <div>
       <ProTable
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
@@ -382,7 +382,7 @@ const Salesorder = () => {
           />
         )}
       </Drawer>
-    </PageContainer>
+    </div>
   );
 };
 

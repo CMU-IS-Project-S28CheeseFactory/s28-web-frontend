@@ -8,11 +8,7 @@ const Sales = (props) => {
   const { children } = props;
   const intl = useIntl();
   return (
-    <PageHeaderWrapper
-      content={intl.formatMessage({
-        id: 'pages.sales.subPage.title',
-      })}
-    >
+    <PageHeaderWrapper>
       {children}
     </PageHeaderWrapper>
   );

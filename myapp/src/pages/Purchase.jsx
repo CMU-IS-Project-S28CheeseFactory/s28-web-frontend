@@ -6,7 +6,7 @@ import { useIntl } from 'umi';
 
 const Purchase = (props) => {
   const { children } = props;
-  const intl = useIntl();
+  // const intl = useIntl();
   return <PageHeaderWrapper>{children}</PageHeaderWrapper>;
 };
 

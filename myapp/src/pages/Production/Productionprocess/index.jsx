@@ -209,7 +209,7 @@ const Productionprocess = () => {
   ];
 
   return (
-    <PageContainer>
+    <div>
       <ProTable
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
@@ -360,7 +360,7 @@ const Productionprocess = () => {
           />
         )}
       </Drawer>
-    </PageContainer>
+    </div>
   );
 };
 

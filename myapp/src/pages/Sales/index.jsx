@@ -237,7 +237,7 @@ const TableList = () => {
     },
   ];
   return (
-    <PageContainer>
+    <div>
       <ProTable
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
@@ -396,7 +396,7 @@ const TableList = () => {
           />
         )}
       </Drawer>
-    </PageContainer>
+    </div>
   );
 };
 
